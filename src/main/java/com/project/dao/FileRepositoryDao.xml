@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.dao.FileRepositoryDao">
+    <resultMap id="repositoryMap" type="FileRepository">
+        <id column="file_repository_id" property="fileRepository"/>
+        <result column="user_id" property="userId"/>
+        <result column="current_size" property="currentSize"/>
+        <result column="max_size" property="maxSize"/>
+    </resultMap>
+    <!--全部字段-->
+    <sql id="allColumn"> user_id, file_repository_id, current_size,max_size </sql>
+<!--添加仓库-->
+    <insert id="insertRepository" >
+        insert file_repository (file_repository_id,user_id)
+        values (#{fileRepositoryId},#{userId})
+    </insert>
+
+</mapper>
