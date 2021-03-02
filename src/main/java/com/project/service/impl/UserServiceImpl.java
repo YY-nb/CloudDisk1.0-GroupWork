@@ -7,8 +7,8 @@ import com.project.exception.RegisterException;
 import com.project.service.UserService;
 import com.project.util.SqlSessionUtil;
 
-public class  UserServiceImpl  extends BaseService implements UserService {
-
+public class  UserServiceImpl   implements UserService {
+    private UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
 
     @Override
     public boolean register(User user)  {

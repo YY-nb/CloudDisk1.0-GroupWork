@@ -19,7 +19,7 @@ public class TokenHandler implements HandlerInterceptor {
         request.setCharacterEncoding("utf-8");
         ResultVo result=new ResultVo();
         //登录或注册时的请求直接放行
-        if(("/user/login".equals(path))||("/user/register".equals(path))||("/user/getCode".equals(path))||("/user/checkName".equals(path))){
+        if(("/user/login".equals(path))||("/user/register".equals(path))||("/user/getCode".equals(path))||("/user/checkName".equals(path))||"/user/update".equals(path)||"/user/test".equals(path)){
             return true;
         }
         String token=request.getParameter("Authorization");

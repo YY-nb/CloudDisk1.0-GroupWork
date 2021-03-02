@@ -30,6 +30,7 @@ public class TransactionInvocationHandler implements InvocationHandler{
 			obj = method.invoke(target, args);
 			
 			session.commit();
+
 		}catch(Exception e){
 			session.rollback();
 			//e.printStackTrace();
@@ -39,9 +40,9 @@ public class TransactionInvocationHandler implements InvocationHandler{
 
 		}finally{
 			SqlSessionUtil.myClose(session);
-			return obj;
+
 		}
-		
+		return obj;
 
 	}
 	

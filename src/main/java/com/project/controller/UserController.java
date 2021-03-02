@@ -5,6 +5,11 @@ import com.project.entity.FileRepository;
 import com.project.entity.User;
 import com.project.exception.LoginException;
 import com.project.exception.RegisterException;
+import com.project.exception.UpdateException;
+import com.project.service.FileRepositoryService;
+import com.project.service.UserService;
+import com.project.service.impl.FileRepositoryServiceImpl;
+import com.project.service.impl.UserServiceImpl;
 import com.project.util.*;
 import com.project.vo.ResultVo;
 import org.slf4j.Logger;
@@ -18,11 +23,39 @@ import java.time.LocalDateTime;
 public class UserController extends BaseController{
     private Logger logger= LogUtil.getInstance(UserController.class);
 
+    //测试，记得删掉
+    @RequestMapping(value = {"user/test"})
+    @ResponseBody
+    public  ResultVo test(String userName,String email,String password,String avatar) throws RegisterException {
+        User user=new User();
+        user.setUserName(userName.trim());//用户名去空格
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setAvatar(avatar);
+        user.setRole("1");
+        //生成UUID
+        String id=UUIDUtil.getUUID();
+        user.setId(id);
+        user.setFileRepositoryId(id);
+        user.setRegisterTime(LocalDateTime.now());
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
+        if(userService.register(user)){
+            ResultMessageUtil.setSuccess(result);
+            logger.info("用户注册成功！");
+
+            return result;
+        }
+        else{
+            throw new RegisterException("注册失败，服务器内部出错");
+        }
+    }
+
     @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
     public ResultVo login(User user) throws LoginException {
         String email=user.getEmail();
         String password=user.getPassword();
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         User userByEmail=userService.selectByEmail(email);
         if(userByEmail==null){
             throw new LoginException("邮箱未注册");
@@ -46,6 +79,7 @@ public class UserController extends BaseController{
     @RequestMapping(value = {"/user/checkName"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
     public ResultVo checkName(String userName) throws RegisterException {
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         //没找到重复名字
         if(!userService.checkUserName(userName)) {
             ResultMessageUtil.setSuccess(result);
@@ -61,6 +95,7 @@ public class UserController extends BaseController{
     @RequestMapping(value={"/user/getCode"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
     public ResultVo validCode(String email) throws RegisterException {
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         if(!userService.checkUserEmail(email)){
             //执行到这里说明邮箱未重复
             //生成验证码发送邮箱
@@ -104,7 +139,12 @@ public class UserController extends BaseController{
         FileRepository repository=new FileRepository();
         repository.setFileRepositoryId(id);
         repository.setUserId(id);
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
+
+
         if(userService.register(user)){
+            //用户注册成功后为用户创建文件仓库
+            FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
             if(fileRepositoryService.insertRepository(repository)){
                 ResultMessageUtil.setSuccess(result);
                 logger.info("用户注册成功！");
@@ -112,7 +152,7 @@ public class UserController extends BaseController{
                 return result;
             }
             else {
-                //，文件仓库添加错误，先把之前添加的用户删掉
+                //文件仓库添加错误，先把之前添加的用户删掉
                 userService.deleteUserById(id);
                 throw new RegisterException("注册失败，服务器内部出错");
             }
@@ -120,6 +160,20 @@ public class UserController extends BaseController{
         else {
             //此时是添加用户的过程中出错
             throw new RegisterException("注册失败，服务器内部出错");
+        }
+    }
+
+    @RequestMapping(value = {"/user/update"})
+    @ResponseBody
+    public ResultVo update(User user) throws UpdateException {
+        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
+        if(userService.updateUser(user)){
+            logger.info("用户信息修改成功");
+            ResultMessageUtil.setSuccess(result);
+            return result;
+        }
+        else{
+            throw new UpdateException("更新失败，服务器内部错误");
         }
     }
 

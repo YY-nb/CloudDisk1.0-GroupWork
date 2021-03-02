@@ -20,10 +20,11 @@ import javax.servlet.http.HttpSession;
 public class BaseController {
     protected ResultVo result=new ResultVo();
     protected HttpSession session;
+
     protected HttpServletResponse response;
     protected HttpServletRequest request;
-    protected UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
-    protected FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
+  //  protected UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
+   // protected FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
 
 //所有controller方法执行前先初始化
 @ModelAttribute

@@ -9,27 +9,46 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SqlSessionUtil {
-    private static SqlSessionFactory factory;
-    static {
-        String conig="mybatis.xml";
-        try {
-            InputStream inputStream=Resources.getResourceAsStream(conig);
-            factory=new SqlSessionFactoryBuilder().build(inputStream);
+    private SqlSessionUtil(){}
 
+    private static SqlSessionFactory factory;
+    private static ThreadLocal<SqlSession> sqlSessionMap = new ThreadLocal<>();
+    static{
+
+        String resource = "mybatis.xml";
+        InputStream inputStream = null;
+        try {
+            inputStream = Resources.getResourceAsStream(resource);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        factory = new SqlSessionFactoryBuilder().build(inputStream);
+
     }
+
+
+
     public static SqlSession getSqlSession(){
-        SqlSession sqlSession=null;
-        if(factory!=null){
-            sqlSession=factory.openSession();
+
+        SqlSession session = sqlSessionMap.get();
+
+        if(session==null){
+
+            session = factory.openSession();
+            sqlSessionMap.set(session);
         }
-        return sqlSession;
+
+        return session;
+
     }
-    public static void myClose(SqlSession sqlSession){
-        if(sqlSession!=null){
-            sqlSession.close();
+
+    public static void myClose(SqlSession session){
+
+        if(session!=null){
+            session.close();
+            sqlSessionMap.remove();
         }
+
     }
 }
+

@@ -2,6 +2,7 @@ package com.project.handler;
 
 import com.project.exception.LoginException;
 import com.project.exception.RegisterException;
+import com.project.exception.UpdateException;
 import com.project.util.ResultMessageUtil;
 import com.project.util.LogUtil;
 import com.project.vo.ResultVo;
@@ -26,6 +27,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = RegisterException.class)
     @ResponseBody
     public ResultVo doRegisterException(RegisterException e){
+        ResultMessageUtil.setErrorByException(e,result);
+        logger.error(e.getMessage());
+        return result;
+    }
+
+    @ExceptionHandler(value = UpdateException.class)
+    @ResponseBody
+    public  ResultVo doUpdateException(UpdateException e){
         ResultMessageUtil.setErrorByException(e,result);
         logger.error(e.getMessage());
         return result;
