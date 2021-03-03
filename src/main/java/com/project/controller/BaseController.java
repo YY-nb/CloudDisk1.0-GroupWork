@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import com.project.entity.User;
 import com.project.service.FileRepositoryService;
 import com.project.service.UserService;
 import com.project.service.impl.FileRepositoryServiceImpl;
@@ -23,8 +24,7 @@ public class BaseController {
 
     protected HttpServletResponse response;
     protected HttpServletRequest request;
-  //  protected UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
-   // protected FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
+    protected User loginUser;
 
 //所有controller方法执行前先初始化
 @ModelAttribute
@@ -32,5 +32,7 @@ public class BaseController {
         this.request=request;
         this.response=response;
         this.session=request.getSession();
+        this.loginUser= (User) session.getAttribute("loginUser");  //得到当前的登录对象
+
     }
 }

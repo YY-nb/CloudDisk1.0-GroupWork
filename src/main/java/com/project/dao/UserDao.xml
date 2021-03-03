@@ -20,82 +20,82 @@
 
     <!--添加语句的字段列表-->
     <sql id="insertColumn">
-        <if test="id != null and id != ''">
+        <if test="id != null ">
             user_id,
         </if>
-        <if test="fileRepositoryId != null and fileRepositoryId != ''">
+        <if test="fileRepositoryId != null ">
             file_repository_id,
         </if>
-        <if test="userName != null and userName != ''">
+        <if test="userName != null ">
             user_name,
         </if>
-        <if test="email != null and email != ''">
+        <if test="email != null ">
             email,
         </if>
-        <if test="password != null and password != ''">
+        <if test="password != null ">
             password,
         </if>
         <if test="registerTime != null">
             register_time,
         </if>
-        <if test="avatar != null and avatar != ''">
+        <if test="avatar != null ">
             avatar,
         </if>
-        <if test="role != null and role != ''">
+        <if test="role != null ">
             role
         </if>
     </sql>
     <!--添加语句的值列表-->
     <sql id="insertValue">
-        <if test="id != null and id != ''">
+        <if test="id != null ">
             #{id},
         </if>
-        <if test="fileRepositoryId != null and fileRepositoryId != ''" >
+        <if test="fileRepositoryId != null " >
             #{fileRepositoryId},
         </if>
-        <if test="userName != null and userName != ''">
+        <if test="userName != null ">
             #{userName},
         </if>
-        <if test="email != null and email != ''">
+        <if test="email != null ">
             #{email},
         </if>
-        <if test="password != null and password != ''">
+        <if test="password != null ">
             #{password},
         </if>
         <if test="registerTime != null">
             #{registerTime},
         </if>
-        <if test="avatar != null and avatar != ''">
+        <if test="avatar != null ">
             #{avatar},
         </if>
-        <if test="role != null and role != ''">
+        <if test="role != null ">
             #{role}
         </if>
     </sql>
     <!-- 修改用户信息    -->
     <sql id="updateValue">
-        <if test="id != null and id != ''">
+        <if test="id != null ">
             user_id=#{id},
         </if>
-        <if test="fileRepositoryId != null and fileRepositoryId != ''" >
+        <if test="fileRepositoryId != null " >
             file_respository_id=#{fileRepositoryId},
         </if>
-        <if test="userName != null and userName != ''">
+        <if test="userName != null ">
             user_name=#{userName},
         </if>
-        <if test="email != null and email != ''">
+        <if test="email != null ">
             email=#{email},
         </if>
-        <if test="password != null and password != ''">
+        <if test="password != null ">
             password#{password},
         </if>
         <if test="registerTime != null">
             register_time#{registerTime},
         </if>
-        <if test="avatar != null and avatar != ''">
+        <if test="avatar != null ">
             avatar=#{avatar},
         </if>
-        <if test="role != null and role != ''">
+        <if test="role != null ">
             role=#{role}
         </if>
     </sql>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.project.dao.FileFolderDao">
+
+    <resultMap id="fileFolderMap" type="FileFolder">
+        <id property="fileFolderId" column="file_folder_id"/>
+        <result property="fileRepositoryId" column="file_repository_id"/>
+        <result property="parentFolderId" column="parent_folder_id"/>
+        <result property="fileFolderName" column="file_folder_name"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+<!--    所有字段-->
+    <sql id="allCollum">
+        file_folder_id,file_repository_id,parent_folder_id,file_folder_name,create_time
+    </sql>
+<!--    添加语句的字段列表-->
+    <sql id="insertColumn">
+    <if test="fileFolderId != null  ">
+        file_folder_id,
+    </if>
+    <if test="fileRepository!=null">
+        file_repository_id,
+    </if>
+    <if test="parentFolderId!=null">
+        parent_folder_id,
+    </if>
+    <if test="fileFolderName!=null">
+        file_folder_name,
+    </if>
+    <if test="createTime !=null">
+        create_time
+    </if>
+    </sql>
+<!--    添加语句的所有值-->
+    <sql id="insertValue">
+        <if test="fileFolderId != null  ">
+            #{fileFolderId},
+        </if>
+        <if test="fileRepository!=null">
+            #{fileRepositoryId},
+        </if>
+        <if test="parentFolderId!=null">
+            #{parentFolderId},
+        </if>
+        <if test="fileFolderName!=null">
+            #{fileFolderName},
+        </if>
+        <if test="createTime !=null">
+            #{createTime}
+        </if>
+    </sql>
+<!--    修改信息-->
+    <sql id="updateValue">
+        <if test="fileFolderId != null  ">
+            file_folder_id=#{fileFolderId},
+        </if>
+        <if test="fileRepository!=null">
+            file_repository_id=#{fileRepositoryId},
+        </if>
+        <if test="parentFolderId!=null">
+            parent_folder_id=#{parentFolderId},
+        </if>
+        <if test="fileFolderName!=null">
+            file_folder_name=#{fileFolderName},
+        </if>
+        <if test="createTime !=null">
+            create_time=#{createTime}
+        </if>
+    </sql>
+    <!--    添加文件夹-->
+    <insert id="insertFileFolder">
+        insert into file_folder
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="insertColumn"/>
+        </trim>
+
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <include refid="insertValue"/>
+        </trim>
+    </insert>
+</mapper>

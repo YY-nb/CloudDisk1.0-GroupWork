@@ -23,32 +23,6 @@ import java.time.LocalDateTime;
 public class UserController extends BaseController{
     private Logger logger= LogUtil.getInstance(UserController.class);
 
-    //测试，记得删掉
-    @RequestMapping(value = {"user/test"})
-    @ResponseBody
-    public  ResultVo test(String userName,String email,String password,String avatar) throws RegisterException {
-        User user=new User();
-        user.setUserName(userName.trim());//用户名去空格
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setAvatar(avatar);
-        user.setRole("1");
-        //生成UUID
-        String id=UUIDUtil.getUUID();
-        user.setId(id);
-        user.setFileRepositoryId(id);
-        user.setRegisterTime(LocalDateTime.now());
-        UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
-        if(userService.register(user)){
-            ResultMessageUtil.setSuccess(result);
-            logger.info("用户注册成功！");
-
-            return result;
-        }
-        else{
-            throw new RegisterException("注册失败，服务器内部出错");
-        }
-    }
 
     @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
@@ -69,6 +43,7 @@ public class UserController extends BaseController{
                 //分配token给前端
                 String token= TokenUtil.sign(userByEmail.getEmail(), DateTimeUtil.getDateTime());
                 ResultMessageUtil.setSuccessByString(token,result);
+                session.setAttribute("loginUser",userByEmail);
                 return result;
             }
         }
@@ -87,11 +62,14 @@ public class UserController extends BaseController{
             return result;
         }
         else{
-            throw new RegisterException("用户名重复");
+            throw new RegisterException("用户名已存在");
 
 
         }
     }
+
+
+
     @RequestMapping(value={"/user/getCode"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
     public ResultVo validCode(String email) throws RegisterException {
@@ -109,7 +87,7 @@ public class UserController extends BaseController{
             return result;
         }
         else{
-            throw new RegisterException("邮箱重复");
+            throw new RegisterException("邮箱已存在，请更换邮箱");
         }
 
     }
@@ -125,7 +103,8 @@ public class UserController extends BaseController{
             return  result;
         }
         User user=new User();
-        user.setUserName(userName.trim());//用户名去空格
+        //用户名去空格
+        user.setUserName(userName.trim());
         user.setEmail(email);
         user.setPassword(password);
         user.setAvatar(avatar);
@@ -167,15 +146,39 @@ public class UserController extends BaseController{
     @ResponseBody
     public ResultVo update(User user) throws UpdateException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
-        if(userService.updateUser(user)){
-            logger.info("用户信息修改成功");
-            ResultMessageUtil.setSuccess(result);
-            return result;
+        String userName=user.getUserName();
+        String email=user.getEmail();
+        StringBuffer error=new StringBuffer();
+        boolean flag=true;
+        //先检查昵称邮箱是否重复
+        if(userName!=null){
+            if(userService.checkUserName(userName)){
+                 error.append("用户名已存在 ");
+                 flag=false;
+
+            }
         }
-        else{
-            throw new UpdateException("更新失败，服务器内部错误");
+        if(email!=null){
+            if(userService.checkUserName(email)){
+                error.append("邮箱已存在 ");
+                flag=false;
+            }
+        }
+        if(!flag){
+            throw new UpdateException(error.toString());
+        }
+        else {
+            if (userService.updateUser(user)) {
+                logger.info("用户信息修改成功");
+                ResultMessageUtil.setSuccess(result);
+                return result;
+            } else {
+                throw new UpdateException("更新失败，服务器内部错误");
+            }
         }
     }
+
+
 
 
 
