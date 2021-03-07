@@ -14,7 +14,11 @@
             <bean class="com.project.handler.TokenHandler"/>
         </mvc:interceptor>
     </mvc:interceptors>
-    
+    <mvc:cors>
+        <mvc:mapping path="/**"
+                     allowed-origins="http://120.25.105.43"
+                     max-age="1800"/>
+    </mvc:cors>
     <mvc:annotation-driven>
 
         <mvc:message-converters register-defaults="true">

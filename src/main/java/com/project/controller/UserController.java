@@ -18,17 +18,20 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Controller
+@CrossOrigin(origins = {"http://120.25.105.43"})
 public class UserController extends BaseController{
     private Logger logger= LogUtil.getInstance(UserController.class);
 
 
     @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"},method=RequestMethod.POST)
     @ResponseBody
-    @CrossOrigin(origins = {"http://120.25.105.43"})
+    @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo login(User user) throws LoginException {
         String email=user.getEmail();
         String password=user.getPassword();
@@ -56,7 +59,7 @@ public class UserController extends BaseController{
     }
     @RequestMapping(value = {"/user/checkName"},produces = {"application/json;charset=utf-8"},method = RequestMethod.GET)
     @ResponseBody
-    @CrossOrigin(origins = {"http://120.25.105.43"})
+    @CrossOrigin(methods = RequestMethod.GET)
     public ResultVo checkName(String userName) throws RegisterException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         //没找到重复名字
@@ -76,7 +79,7 @@ public class UserController extends BaseController{
 
     @RequestMapping(value={"/user/getCode"},produces = {"application/json;charset=utf-8"},method=RequestMethod.POST)
     @ResponseBody
-    @CrossOrigin(origins = {"http://120.25.105.43"})
+    @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo validCode(String email) throws RegisterException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         if(!userService.checkUserEmail(email)){
@@ -99,8 +102,8 @@ public class UserController extends BaseController{
 
     @RequestMapping(value = {"/user/register"},produces = {"application/json;charset=utf-8"},method = RequestMethod.POST)
     @ResponseBody
-    @CrossOrigin(origins = {"http://120.25.105.43"})
-    public  ResultVo register(String userName,String email,String password,String authCode,String avatar) throws RegisterException {
+    @CrossOrigin(methods = RequestMethod.POST)
+    public  ResultVo register(String userName, String email, String password, String authCode, MultipartFile avatar) throws RegisterException, IOException {
         String code= (String) session.getAttribute("authCode");
         //检查验证码
         if(!authCode.equals(code)){
@@ -113,13 +116,19 @@ public class UserController extends BaseController{
         user.setUserName(userName.trim());
         user.setEmail(email);
         user.setPassword(password);
-        user.setAvatar(avatar);
         user.setRole("1");
         //生成UUID
         String id=UUIDUtil.getUUID();
         user.setId(id);
         user.setFileRepositoryId(id);
         user.setRegisterTime(LocalDateTime.now());
+
+        //文件最后要储存的路径
+        String filePath=formerPath+userName+"/avatar";
+        //上传文件到指定目录
+        FileUtil.uploadFile(avatar,filePath,userName);
+        //没抛出异常说明上传成功
+        logger.info("文件上传至本地成功");
         //初始化用户专属 的文件仓库
         FileRepository repository=new FileRepository();
         repository.setFileRepositoryId(id);
@@ -150,7 +159,7 @@ public class UserController extends BaseController{
 
     @RequestMapping(value = {"/user/update"},method = RequestMethod.GET)
     @ResponseBody
-    @CrossOrigin(origins = {"http://120.25.105.43"})
+    @CrossOrigin(methods = RequestMethod.GET)
     public ResultVo update(User user) throws UpdateException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         String userName=user.getUserName();

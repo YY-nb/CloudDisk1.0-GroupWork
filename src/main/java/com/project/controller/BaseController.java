@@ -25,7 +25,7 @@ public class BaseController {
     protected HttpServletResponse response;
     protected HttpServletRequest request;
     protected User loginUser;
-
+    protected String formerPath="/home/cloudDisk/www/user/";
 //所有controller方法执行前先初始化
 @ModelAttribute
     public void setResAndReq(HttpServletRequest request,HttpServletResponse response){

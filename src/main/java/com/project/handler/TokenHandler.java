@@ -5,6 +5,7 @@ import com.project.util.PrintJson;
 import com.project.util.TokenUtil;
 import com.project.vo.ResultVo;
 import org.slf4j.Logger;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -23,7 +24,7 @@ public class TokenHandler implements HandlerInterceptor {
                 ("/user/getCode".equals(path))||("/user/checkName".equals(path))||"/test".equals(path)){
             return true;
         }
-        String token=request.getParameter("Authorization");
+        String token=request.getHeader("Authorization");
         if(token!=null){
             boolean flag = TokenUtil.verify(token);
             //如果token验证成功

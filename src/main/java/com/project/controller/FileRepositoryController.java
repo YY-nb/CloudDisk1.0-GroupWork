@@ -24,15 +24,20 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
+@CrossOrigin(origins = {"http://120.25.105.43"})
 public class FileRepositoryController extends BaseController{
     private Logger logger= LogUtil.getInstance(FileRepositoryController.class);
     //绝对路径前面固定的路径 (文件存放的路径的前半部分）
-    private String formerPath="/home/cloudDisk/www/user/";
+
 
     @RequestMapping(value = {"/user/uploadFile"},method = RequestMethod.POST)
     @ResponseBody
-    @CrossOrigin(origins = {"http://120.25.105.43"})
+    @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo uploadFile(MultipartFile myFile,String path) throws IOException, FileException {
+        if(myFile.isEmpty()){
+            logger.info("文件为空，上传失败");
+            throw  new FileException("文件为空，请重新提交");
+        }
         FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
         //当前用户的一些信息
         String loginUserId= loginUser.getUserId();
@@ -96,4 +101,6 @@ public class FileRepositoryController extends BaseController{
 
         return null;
     }
+
+
 }

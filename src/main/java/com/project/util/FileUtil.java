@@ -15,7 +15,7 @@ public class FileUtil {
      * @throws IOException
      */
     public  static void uploadFile(MultipartFile myFile,String path,String fileName) throws IOException {
-        File file =new File(path+fileName);
+        File file =new File(path+"/"+fileName);
         myFile.transferTo(file);
     }
 
