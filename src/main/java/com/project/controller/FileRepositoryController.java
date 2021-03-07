@@ -13,6 +13,7 @@ import com.project.util.*;
 import com.project.vo.ResultVo;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,7 @@ public class FileRepositoryController extends BaseController{
 
     @RequestMapping(value = {"/user/uploadFile"})
     @ResponseBody
+    @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo uploadFile(MultipartFile myFile,String path) throws IOException, FileException {
         FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
         //当前用户的一些信息

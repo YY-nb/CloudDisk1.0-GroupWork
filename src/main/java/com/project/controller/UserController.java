@@ -14,6 +14,7 @@ import com.project.util.*;
 import com.project.vo.ResultVo;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -26,6 +27,7 @@ public class UserController extends BaseController{
 
     @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
+    @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo login(User user) throws LoginException {
         String email=user.getEmail();
         String password=user.getPassword();
@@ -53,6 +55,7 @@ public class UserController extends BaseController{
     }
     @RequestMapping(value = {"/user/checkName"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
+    @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo checkName(String userName) throws RegisterException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         //没找到重复名字
@@ -72,6 +75,7 @@ public class UserController extends BaseController{
 
     @RequestMapping(value={"/user/getCode"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
+    @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo validCode(String email) throws RegisterException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         if(!userService.checkUserEmail(email)){
@@ -94,6 +98,7 @@ public class UserController extends BaseController{
 
     @RequestMapping(value = {"/user/register"},produces = {"application/json;charset=utf-8"})
     @ResponseBody
+    @CrossOrigin(origins = {"http://120.25.105.43"})
     public  ResultVo register(String userName,String email,String password,String authCode,String avatar) throws RegisterException {
         String code= (String) session.getAttribute("authCode");
         //检查验证码
@@ -144,6 +149,7 @@ public class UserController extends BaseController{
 
     @RequestMapping(value = {"/user/update"})
     @ResponseBody
+    @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo update(User user) throws UpdateException {
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         String userName=user.getUserName();
