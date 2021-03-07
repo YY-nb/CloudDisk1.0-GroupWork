@@ -126,9 +126,10 @@ public class UserController extends BaseController{
         //文件最后要储存的路径
         String filePath=formerPath+userName+"/avatar";
         //上传文件到指定目录
-        FileUtil.uploadFile(avatar,filePath,userName);
+        FileUtil.uploadFile(avatar,filePath,avatar.getOriginalFilename());
         //没抛出异常说明上传成功
-        logger.info("文件上传至本地成功");
+        logger.info("头像上传至本地成功");
+        user.setAvatar(filePath);
         //初始化用户专属 的文件仓库
         FileRepository repository=new FileRepository();
         repository.setFileRepositoryId(id);
