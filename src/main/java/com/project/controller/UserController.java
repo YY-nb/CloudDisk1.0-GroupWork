@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ public class UserController extends BaseController{
     private Logger logger= LogUtil.getInstance(UserController.class);
 
 
-    @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"})
+    @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"},method=RequestMethod.POST)
     @ResponseBody
     @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo login(User user) throws LoginException {
@@ -53,7 +54,7 @@ public class UserController extends BaseController{
 
 
     }
-    @RequestMapping(value = {"/user/checkName"},produces = {"application/json;charset=utf-8"})
+    @RequestMapping(value = {"/user/checkName"},produces = {"application/json;charset=utf-8"},method = RequestMethod.GET)
     @ResponseBody
     @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo checkName(String userName) throws RegisterException {
@@ -73,7 +74,7 @@ public class UserController extends BaseController{
 
 
 
-    @RequestMapping(value={"/user/getCode"},produces = {"application/json;charset=utf-8"})
+    @RequestMapping(value={"/user/getCode"},produces = {"application/json;charset=utf-8"},method=RequestMethod.POST)
     @ResponseBody
     @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo validCode(String email) throws RegisterException {
@@ -96,7 +97,7 @@ public class UserController extends BaseController{
 
     }
 
-    @RequestMapping(value = {"/user/register"},produces = {"application/json;charset=utf-8"})
+    @RequestMapping(value = {"/user/register"},produces = {"application/json;charset=utf-8"},method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin(origins = {"http://120.25.105.43"})
     public  ResultVo register(String userName,String email,String password,String authCode,String avatar) throws RegisterException {
@@ -147,7 +148,7 @@ public class UserController extends BaseController{
         }
     }
 
-    @RequestMapping(value = {"/user/update"})
+    @RequestMapping(value = {"/user/update"},method = RequestMethod.GET)
     @ResponseBody
     @CrossOrigin(origins = {"http://120.25.105.43"})
     public ResultVo update(User user) throws UpdateException {
