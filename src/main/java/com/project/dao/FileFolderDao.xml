@@ -12,7 +12,7 @@
         <result property="createTime" column="create_time"/>
     </resultMap>
 <!--    所有字段-->
-    <sql id="allCollum">
+    <sql id="allColumn">
         file_folder_id,file_repository_id,parent_folder_id,file_folder_name,create_time
     </sql>
 <!--    添加语句的字段列表-->
@@ -20,7 +20,7 @@
     <if test="fileFolderId != null  ">
         file_folder_id,
     </if>
-    <if test="fileRepository!=null">
+    <if test="fileRepositoryId!=null">
         file_repository_id,
     </if>
     <if test="parentFolderId!=null">
@@ -38,7 +38,7 @@
         <if test="fileFolderId != null  ">
             #{fileFolderId},
         </if>
-        <if test="fileRepository!=null">
+        <if test="fileRepositoryId!=null">
             #{fileRepositoryId},
         </if>
         <if test="parentFolderId!=null">
@@ -56,7 +56,7 @@
         <if test="fileFolderId != null  ">
             file_folder_id=#{fileFolderId},
         </if>
-        <if test="fileRepository!=null">
+        <if test="fileRepositoryId!=null">
             file_repository_id=#{fileRepositoryId},
         </if>
         <if test="parentFolderId!=null">
@@ -80,4 +80,11 @@
             <include refid="insertValue"/>
         </trim>
     </insert>
+
+    <select id="selectFolderByNameAndRepository" resultMap="fileFolderMap">
+        select
+        <include refid="allColumn"/>
+        from file_folder
+        where file_folder_name=#{fileFolderName} and file_repository_id=#{fileRepositoryId}
+    </select>
 </mapper>

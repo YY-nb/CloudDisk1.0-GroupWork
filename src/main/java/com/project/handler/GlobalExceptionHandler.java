@@ -1,5 +1,6 @@
 package com.project.handler;
 
+import com.project.exception.FileException;
 import com.project.exception.LoginException;
 import com.project.exception.RegisterException;
 import com.project.exception.UpdateException;
@@ -16,11 +17,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class GlobalExceptionHandler {
     private ResultVo result=new ResultVo();
     private Logger logger= LogUtil.getInstance(GlobalExceptionHandler.class);
+
     @ExceptionHandler(value = LoginException.class)
     @ResponseBody
     public ResultVo doLoginException(LoginException e){
         ResultMessageUtil.setErrorByException(e,result);
-        logger.error("登录失败,{}",e.getMessage());
+        logger.error(e.getMessage());
         return result;
     }
 
@@ -35,6 +37,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = UpdateException.class)
     @ResponseBody
     public  ResultVo doUpdateException(UpdateException e){
+        ResultMessageUtil.setErrorByException(e,result);
+        logger.error(e.getMessage());
+        return result;
+    }
+    @ExceptionHandler(value = FileException.class)
+    @ResponseBody
+    public  ResultVo doFileException(UpdateException e){
         ResultMessageUtil.setErrorByException(e,result);
         logger.error(e.getMessage());
         return result;

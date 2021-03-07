@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.project.dao.UserDao">
+<mapper namespace="com.project.dao.MyFileDao">
     <resultMap id="MyFileMap" type="MyFile">
         <id property="fileId" column="file_id"/>
         <result property="fileRepositoryId" column="file_repository_id"/>
@@ -16,14 +16,14 @@
     </resultMap>
 <!--    所有列-->
     <sql id="allColumn" >
-        file_id,file_repository,parent_folder_id,file_name,file_path,upload_time,size,type,state
+        file_id,file_repository_id,parent_folder_id,file_name,file_path,upload_time,size,type,state
     </sql>
 <!--    添加语句的字段列表-->
     <sql id="insertColumn">
         <if test="fileId != null  ">
             file_id,
         </if>
-        <if test="fileRepository!=null">
+        <if test="fileRepositoryId!=null">
             file_repository_id,
         </if>
         <if test="parentFolderId!=null">
@@ -53,7 +53,7 @@
         <if test="fileId != null  ">
             #{fileId},
         </if>
-        <if test="fileRepository!=null">
+        <if test="fileRepositoryId!=null">
             #{fileRepositoryId},
         </if>
         <if test="parentFolderId!=null">
@@ -83,8 +83,8 @@
         <if test="fileId != null  ">
             file_id=#{fileId},
         </if>
-        <if test="fileRepository!=null">
-            file_repository=#{fileRepositoryId},
+        <if test="fileRepositoryId!=null">
+            file_repository_id=#{fileRepositoryId},
         </if>
         <if test="parentFolderId!=null">
             file_folder_id=#{parentFolderId},
@@ -120,4 +120,11 @@
             <include refid="insertValue"/>
         </trim>
     </insert>
+
+    <select id="getFileByParentFolderId" resultMap="MyFileMap">
+        select
+        <include refid="allColumn"/>
+        from my_file
+        where parent_folder_id=#{parentFolderId}
+    </select>
 </mapper>

@@ -1,6 +1,7 @@
 package com.project.dao;
 
 import com.project.entity.FileRepository;
+import com.project.entity.User;
 
 public interface FileRepositoryDao {
     /**
@@ -9,4 +10,11 @@ public interface FileRepositoryDao {
      * @return 数据库影响的行数
      */
     Integer insertRepository(FileRepository repository);
+
+    /**
+     * 通过用户名查询对应的文件仓库
+     * @param userId
+     * @return 查询出的文件仓库
+     */
+    FileRepository getRepositoryByUserId(String userId);
 }

@@ -7,6 +7,7 @@
     <properties resource="jdbc.properties"/>
     <settings>
         <setting name="logImpl" value="STDOUT_LOGGING"/>
+
     </settings>
     <typeAliases>
         <package name="com.project.entity"/>

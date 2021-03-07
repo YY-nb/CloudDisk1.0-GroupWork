@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.project.dao.FileRepositoryDao">
     <resultMap id="repositoryMap" type="FileRepository">
-        <id column="file_repository_id" property="fileRepository"/>
+        <id column="file_repository_id" property="fileRepositoryId"/>
         <result column="user_id" property="userId"/>
         <result column="current_size" property="currentSize"/>
         <result column="max_size" property="maxSize"/>
@@ -16,5 +16,11 @@
         insert file_repository (file_repository_id,user_id)
         values (#{fileRepositoryId},#{userId})
     </insert>
-
+<!--通过用户名查文件仓库-->
+    <select id="getRepositoryByUserId" resultMap="repositoryMap">
+        select
+        <include refid="allColumn"/>
+        from file_repository
+        where user_id=#{userId}
+    </select>
 </mapper>

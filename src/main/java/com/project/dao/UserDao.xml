@@ -5,7 +5,7 @@
 
 <mapper namespace="com.project.dao.UserDao">
     <resultMap id="userMap" type="User">
-        <id column="user_id" property="id" />
+        <id column="user_id" property="userId" />
         <result column="file_repository_id" property="fileRepositoryId"/>
         <result column="user_name" property="userName"/>
         <result column="email" property="email"/>
@@ -20,7 +20,7 @@
 
     <!--添加语句的字段列表-->
     <sql id="insertColumn">
-        <if test="id != null ">
+        <if test="userId != null ">
             user_id,
         </if>
         <if test="fileRepositoryId != null ">
@@ -47,8 +47,8 @@
     </sql>
     <!--添加语句的值列表-->
     <sql id="insertValue">
-        <if test="id != null ">
-            #{id},
+        <if test="userId != null ">
+            #{userId},
         </if>
         <if test="fileRepositoryId != null " >
             #{fileRepositoryId},
@@ -74,8 +74,8 @@
     </sql>
     <!-- 修改用户信息    -->
     <sql id="updateValue">
-        <if test="id != null ">
-            user_id=#{id},
+        <if test="userId != null ">
+            user_id=#{userId},
         </if>
         <if test="fileRepositoryId != null " >
             file_respository_id=#{fileRepositoryId},
@@ -135,14 +135,14 @@
             <include refid="updateValue"/>
         </set>
         <where>
-            user_id=#{id}
+            user_id=#{userId}
         </where>
     </update>
     <!-- 通过id删除用户   -->
     <delete id="deleteUserById">
         delete from user
         <where>
-            user_id=#{id}
+            user_id=#{userId}
         </where>
     </delete>
 </mapper>

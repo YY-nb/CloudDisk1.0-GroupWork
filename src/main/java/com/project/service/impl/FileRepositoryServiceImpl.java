@@ -7,13 +7,20 @@ import com.project.service.FileRepositoryService;
 import com.project.util.SqlSessionUtil;
 
 public class FileRepositoryServiceImpl  implements FileRepositoryService {
-    private FileRepositoryDao fileRepositoryDao= SqlSessionUtil.getSqlSession().getMapper(FileRepositoryDao.class);
+
     @Override
     public boolean insertRepository(FileRepository fileRepository)  {
+        FileRepositoryDao fileRepositoryDao= SqlSessionUtil.getSqlSession().getMapper(FileRepositoryDao.class);
         if(fileRepositoryDao.insertRepository(fileRepository)==1){
             return true;
         }else {
             return false;
         }
+    }
+
+    @Override
+    public FileRepository getRepositoryByUserId(String userId) {
+        FileRepositoryDao fileRepositoryDao= SqlSessionUtil.getSqlSession().getMapper(FileRepositoryDao.class);
+        return fileRepositoryDao.getRepositoryByUserId(userId);
     }
 }

@@ -10,4 +10,11 @@ public interface FileRepositoryService {
      * @return 是否添加成功
      */
     boolean insertRepository(FileRepository fileRepository) ;
+
+    /**
+     * 通过id查文件仓库
+     * @param userId
+     * @return fileRepository
+     */
+    FileRepository getRepositoryByUserId(String userId);
 }

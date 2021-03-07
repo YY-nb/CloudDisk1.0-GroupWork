@@ -121,7 +121,7 @@ public class UserController extends BaseController{
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
 
 
-        if(userService.register(user)){
+       if(userService.register(user)){
             //用户注册成功后为用户创建文件仓库
             FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
             if(fileRepositoryService.insertRepository(repository)){
@@ -133,12 +133,12 @@ public class UserController extends BaseController{
             else {
                 //文件仓库添加错误，先把之前添加的用户删掉
                 userService.deleteUserById(id);
-                throw new RegisterException("注册失败，服务器内部出错");
+                throw new RegisterException("注册失败，服务器内部出错1");
             }
         }
         else {
             //此时是添加用户的过程中出错
-            throw new RegisterException("注册失败，服务器内部出错");
+            throw new RegisterException("注册失败，服务器内部出错2");
         }
     }
 

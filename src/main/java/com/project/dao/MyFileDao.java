@@ -2,6 +2,8 @@ package com.project.dao;
 
 import com.project.entity.MyFile;
 
+import java.util.List;
+
 public interface MyFileDao {
     /**
      * 添加文件
@@ -10,4 +12,17 @@ public interface MyFileDao {
      */
     Integer insertFile(MyFile myFile);
 
+    /**
+     * 根据父文件夹id查询父文件夹下的所有文件
+     * @param parentFolderId
+     * @return 文件列表
+     */
+    List<MyFile> getFileByParentFolderId(String parentFolderId);
+
+    /**
+     * 根据路径获得所有匹配的文件
+     * @param filePath
+     * @return 文件列表
+     */
+    List<MyFile> getFileByPath(String filePath);
 }

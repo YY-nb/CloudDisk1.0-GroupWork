@@ -8,10 +8,11 @@ import com.project.service.UserService;
 import com.project.util.SqlSessionUtil;
 
 public class  UserServiceImpl   implements UserService {
-    private UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
+
 
     @Override
     public boolean register(User user)  {
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
         if(userDao.insertUser(user)==1){
             return true;
         }
@@ -22,13 +23,14 @@ public class  UserServiceImpl   implements UserService {
 
     @Override
     public User selectByEmail(String email) {
-
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
         return userDao.selectByEmail(email);
 
     }
 
     @Override
     public boolean checkUserEmail(String email)  {
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
         if(userDao.selectByEmail(email)==null){
             return false;
         }
@@ -39,6 +41,7 @@ public class  UserServiceImpl   implements UserService {
 
     @Override
     public boolean checkUserName(String userName)  {
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
         if(userDao.selectByUserName(userName)!=null){
             return true;
 
@@ -48,6 +51,7 @@ public class  UserServiceImpl   implements UserService {
 
     @Override
     public boolean updateUser(User user) {
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
         if(userDao.updateUser(user)==1){
             return true;
         }
@@ -58,6 +62,7 @@ public class  UserServiceImpl   implements UserService {
 
     @Override
     public boolean deleteUserById(String userId) {
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
         if(userDao.deleteUserById(userId)==1){
             return  true;
         }
