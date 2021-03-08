@@ -19,7 +19,8 @@ public class MailUtil {
             HtmlEmail email=new HtmlEmail();
             email.setHostName("smtp.qq.com");//邮箱的smtp服务器
             email.setCharset("utf-8");//设置发送的字符类型
-
+            email.setSmtpPort(465);
+            email.setSSLOnConnect(true);
             email.addTo(userEmail);//设置收件人
             email.setFrom("1571727223@qq.com","网盘");//设置发送人，邮箱和用户名，发送人的邮箱为自己的，用户名可以随便填
             email.setAuthentication("1571727223@qq.com","");//设置发送人到的邮箱和用户名和授权码(授权码是自己设置的)
