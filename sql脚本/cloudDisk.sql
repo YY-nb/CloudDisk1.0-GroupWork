@@ -1,5 +1,5 @@
-create database  if not exists cloudDisk;
-use cloudDisk;
+create database  if not exists clouddisk;
+use clouddisk;
 
 CREATE TABLE `user` (
   `user_id` char(32) NOT NULL,
@@ -14,7 +14,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `file_respository_id_UNIQUE` (`file_repository_id`),
   UNIQUE KEY `user_name_UNIQUE` (`user_name`),
   UNIQUE KEY `user_email_UNIQUE` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 CREATE TABLE `my_file` (
   `file_id` char(32) NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE `my_file` (
   `type` varchar(100) NOT NULL,
   `state` char(1) NOT NULL,
   PRIMARY KEY (`file_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 CREATE TABLE `file_folder` (
   `file_folder_id` char(32) NOT NULL,
@@ -36,7 +36,7 @@ CREATE TABLE `file_folder` (
   `create_time` datetime NOT NULL,
   `file_repository_id` char(32) NOT NULL,
   PRIMARY KEY (`file_folder_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 
 CREATE TABLE `file_repository` (
   `file_repository_id` char(32) NOT NULL,
@@ -45,5 +45,5 @@ CREATE TABLE `file_repository` (
   `max_size` double DEFAULT '15728640',
   PRIMARY KEY (`file_repository_id`),
   UNIQUE KEY `user_id_UNIQUE` (`user_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB ;
 

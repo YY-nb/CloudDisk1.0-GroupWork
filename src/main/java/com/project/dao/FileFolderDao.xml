@@ -87,4 +87,11 @@
         from file_folder
         where file_folder_name=#{fileFolderName} and file_repository_id=#{fileRepositoryId}
     </select>
+
+    <select id="getFolderByParentFolderId" resultMap="fileFolderMap">
+        select
+        <include refid="allColumn"/>
+        from file_folder
+        where parent_folder_id=#{parentFolderId}
+    </select>
 </mapper>
