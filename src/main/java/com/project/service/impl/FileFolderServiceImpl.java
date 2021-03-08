@@ -5,6 +5,8 @@ import com.project.entity.FileFolder;
 import com.project.service.FileFolderService;
 import com.project.util.SqlSessionUtil;
 
+import java.util.List;
+
 public class FileFolderServiceImpl implements FileFolderService {
 
     @Override
@@ -23,5 +25,11 @@ public class FileFolderServiceImpl implements FileFolderService {
     public FileFolder selectFolderByNameAndRepository(String folderName, String fileRepositoryId) {
         FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
         return fileFolderDao.selectFolderByNameAndRepository(folderName,fileRepositoryId);
+    }
+
+    @Override
+    public List<FileFolder> getFolderByParentFolderId(String parentFolderId) {
+        FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
+        return fileFolderDao.getFolderByParentFolderId(parentFolderId);
     }
 }

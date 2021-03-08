@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import com.project.entity.FileFolder;
 import com.project.entity.FileRepository;
 import com.project.entity.MyFile;
 import com.project.exception.FileException;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +36,7 @@ public class FileRepositoryController extends BaseController{
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo uploadFile(MultipartFile myFile,String path) throws IOException, FileException {
+        ResultMessageUtil.removeData(result);
         if(myFile.isEmpty()){
             logger.info("文件为空，上传失败");
             throw  new FileException("文件为空，请重新提交");
@@ -49,7 +52,7 @@ public class FileRepositoryController extends BaseController{
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
         //判断上传的文件是否已存在与数据库中
         MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
-        List<MyFile> myFiles=myFileService.getFileByParentPathId(parentFolderId);
+        List<MyFile> myFiles=myFileService.getFileByParentFolderId(parentFolderId);
         for(MyFile file:myFiles){
             if(file.getFileName().equals(name)){
                 String error="上传的文件已存在";
@@ -66,7 +69,6 @@ public class FileRepositoryController extends BaseController{
             logger.error(error);
             throw new FileException(error);
         }
-
         //文件最后要储存的路径
         String filePath=formerPath+loginUserName+path;
         //上传文件到指定目录
@@ -95,12 +97,55 @@ public class FileRepositoryController extends BaseController{
         }
 
     }
-    @RequestMapping(value = {"/user/getFileList"})
+    @RequestMapping(value = {"/user/getFileList"},method = RequestMethod.GET)
     @ResponseBody
     public List<String> getFileList(String path){
+        ResultMessageUtil.removeData(result);
 
         return null;
     }
 
+    @RequestMapping(value = {"/user/createFolder"},method = RequestMethod.POST)
+    @ResponseBody
+    public ResultVo createFolder(String path,String name) throws FileException {
+        FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
+        String loginUserName=loginUser.getUserName();
+        String loginUserRepositoryId=loginUser.getFileRepositoryId();
+        //分离出父文件夹的名字,得到父文件夹id
+        String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
+        //判断上传的文件是否已存在与数据库中
+        List<FileFolder> folders=fileFolderService.getFolderByParentFolderId(parentFolderId);
+        for(FileFolder fileFolder:folders){
+            if(fileFolder.getFileFolderName().equals(name)){
+                String error="文件夹名重复";
+                logger.error(error);
+                throw new FileException(error);
+            }
+        }
+        //执行到这里说明文件夹名未重复
+        String folderPath=formerPath+loginUserName+path;
+        //在本地创建对应文件夹
+        new File(folderPath).mkdirs();
+        FileFolder fileFolder=new FileFolder();
+        fileFolder.setFileFolderId(UUIDUtil.getUUID());
+        fileFolder.setFileFolderName(name);
+        fileFolder.setFileRepositoryId(loginUserRepositoryId);
+        fileFolder.setCreateTime(LocalDateTime.now());
+        if(fileFolderService.insertFileFolder(fileFolder)){
+            ResultMessageUtil.setSuccess(result);
+            logger.info("用户创建文件夹成功，数据已添加至数据库");
+            return result;
+        }else {
+            throw new FileException("数据上传数据库失败，服务器内部错误");
+        }
+
+
+    }
+    @RequestMapping(value = {"/user/delete"},method = RequestMethod.POST)
+    @ResponseBody
+    public ResultVo delete(List<String> files){
+
+        return null;
+    }
 
 }

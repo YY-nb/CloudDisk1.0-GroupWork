@@ -17,5 +17,5 @@ public interface MyFileService {
      * @param parentFolderId
      * @return 文件列表
      */
-    List<MyFile> getFileByParentPathId(String parentFolderId);
+    List<MyFile> getFileByParentFolderId(String parentFolderId);
 }

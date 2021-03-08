@@ -33,6 +33,7 @@ public class UserController extends BaseController{
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo login(User user) throws LoginException {
+        ResultMessageUtil.removeData(result);
         String email=user.getEmail();
         String password=user.getPassword();
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
@@ -48,7 +49,10 @@ public class UserController extends BaseController{
                 logger.info("登录状态：已登录");
                 //分配token给前端
                 String token= TokenUtil.sign(userByEmail.getEmail(), DateTimeUtil.getDateTime());
-                ResultMessageUtil.setSuccessByString(token,result);
+                ResultMessageUtil.setSuccess(result);
+                ResultMessageUtil.setDataByString("email",userByEmail.getEmail(),result);
+                ResultMessageUtil.setDataByString("userName",userByEmail.getUserName(),result);
+                ResultMessageUtil.setDataByString("token",token,result);
                 session.setAttribute("loginUser",userByEmail);
                 return result;
             }
@@ -162,6 +166,7 @@ public class UserController extends BaseController{
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.GET)
     public ResultVo update(User user) throws UpdateException {
+        ResultMessageUtil.removeData(result);
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         String userName=user.getUserName();
         String email=user.getEmail();
@@ -188,6 +193,10 @@ public class UserController extends BaseController{
             if (userService.updateUser(user)) {
                 logger.info("用户信息修改成功");
                 ResultMessageUtil.setSuccess(result);
+                String token=TokenUtil.sign(email,DateTimeUtil.getDateTime());
+                ResultMessageUtil.setDataByString("email",email,result);
+                ResultMessageUtil.setDataByString("userName",userName,result);
+                ResultMessageUtil.setDataByString("token",token,result);
                 return result;
             } else {
                 throw new UpdateException("更新失败，服务器内部错误");

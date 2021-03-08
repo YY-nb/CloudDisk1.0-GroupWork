@@ -25,4 +25,11 @@ public interface MyFileDao {
      * @return 文件列表
      */
     List<MyFile> getFileByPath(String filePath);
+
+    /**
+     * 删除文件
+     * @param file
+     * @return 数据库影响的行数
+     */
+    Integer deleteFile(MyFile file);
 }

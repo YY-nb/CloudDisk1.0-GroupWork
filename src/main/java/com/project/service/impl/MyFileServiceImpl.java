@@ -22,7 +22,7 @@ public class MyFileServiceImpl implements MyFileService {
     }
 
     @Override
-    public List<MyFile> getFileByParentPathId(String parentFolderId) {
+    public List<MyFile> getFileByParentFolderId(String parentFolderId) {
         MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
         return myFileDao.getFileByParentFolderId(parentFolderId);
     }
