@@ -71,5 +71,11 @@ public class  UserServiceImpl   implements UserService {
         }
     }
 
+    @Override
+    public User selectByRepositoryId(String fileRepositoryId) {
+        UserDao userDao= SqlSessionUtil.getSqlSession().getMapper(UserDao.class);
+        return userDao.selectByRepositoryId(fileRepositoryId);
+    }
+
 
 }

@@ -26,4 +26,18 @@ public interface FileFolderService {
      * @return
      */
     List<FileFolder> getFolderByParentFolderId(String parentFolderId);
+
+    /**
+     * 修改文件夹名字
+     * @param fileFolderName
+     * @return 是否成功
+     */
+    boolean updateFolderName(FileFolder folder);
+
+    /**
+     * 根据路径查文件夹
+     * @param fileFolderPath
+     * @return FileFolder
+     */
+    FileFolder getFolderByPath(String fileFolderPath);
 }

@@ -17,4 +17,11 @@ public interface FileRepositoryService {
      * @return fileRepository
      */
     FileRepository getRepositoryByUserId(String userId);
+
+    /**
+     * 修改仓库当前容量
+     * @param fileRepository
+     * @return  是否修改成功
+     */
+    boolean updateSize(FileRepository fileRepository);
 }

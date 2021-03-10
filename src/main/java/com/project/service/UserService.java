@@ -49,5 +49,11 @@ public interface UserService {
      */
     boolean deleteUserById(String userId) ;
 
+    /**
+     * 根据文件仓库id查用户
+     * @param fileRepositoryId
+     */
+    User selectByRepositoryId(String fileRepositoryId);
+
 
 }

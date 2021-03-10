@@ -26,4 +26,22 @@ public class MyFileServiceImpl implements MyFileService {
         MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
         return myFileDao.getFileByParentFolderId(parentFolderId);
     }
+
+    @Override
+    public boolean updateFileName(MyFile myFile) {
+        MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
+        if(myFileDao.updateFileName(myFile)==1){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
+    @Override
+    public MyFile getFileByPath(String filePath) {
+        MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
+        return myFileDao.getFileByPath(filePath);
+    }
 }

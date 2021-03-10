@@ -23,4 +23,9 @@
         from file_repository
         where user_id=#{userId}
     </select>
+
+    <update id="updateSize">
+        update file_repository
+        set current_size=#{currentSize}
+    </update>
 </mapper>

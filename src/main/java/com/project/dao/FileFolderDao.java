@@ -3,6 +3,7 @@ package com.project.dao;
 import com.project.entity.FileFolder;
 import org.apache.ibatis.annotations.Param;
 
+import javax.mail.Folder;
 import java.util.List;
 
 public interface FileFolderDao {
@@ -27,5 +28,22 @@ public interface FileFolderDao {
      * @return FileFolder
      */
     List<FileFolder> getFolderByParentFolderId(String parentFolderId);
+
+    /**
+     * 修改文件夹名字
+     * @param folder
+     * @return 数据库影响的行数
+     */
+    Integer updateFolderName( FileFolder folder);
+
+    /**
+     * 根据路径获取文件夹
+     * @param fileFolderPath
+     * @return
+     */
+    FileFolder getFolderByPath(String fileFolderPath);
+
+
+
 }
 

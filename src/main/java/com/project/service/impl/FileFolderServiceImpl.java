@@ -32,4 +32,21 @@ public class FileFolderServiceImpl implements FileFolderService {
         FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
         return fileFolderDao.getFolderByParentFolderId(parentFolderId);
     }
+
+    @Override
+    public boolean updateFolderName( FileFolder folder) {
+        FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
+        if(fileFolderDao.updateFolderName(folder)==1){
+            return  true;
+        }else {
+            return false;
+        }
+
+    }
+
+    @Override
+    public FileFolder getFolderByPath(String fileFolderPath) {
+        FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
+        return fileFolderDao.getFolderByPath(fileFolderPath);
+    }
 }

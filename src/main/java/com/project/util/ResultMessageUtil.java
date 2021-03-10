@@ -19,7 +19,7 @@ public class ResultMessageUtil {
         result.setMessage("failed");
         result.setError(error);
     }
-    public static void setDataByString(String name,String value,ResultVo result){
+    public static void setDataByString(String name,Object value,ResultVo result){
         result.getData().put(name,value);
     }
     public static void removeData(ResultVo result){

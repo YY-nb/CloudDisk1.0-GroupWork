@@ -9,7 +9,7 @@ CREATE TABLE `user` (
   `password` varchar(20) NOT NULL,
   `register_time` datetime NOT NULL,
   `avatar` varchar(255) DEFAULT NULL,
-  `role` char(1) NOT NULL,
+  
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `file_respository_id_UNIQUE` (`file_repository_id`),
   UNIQUE KEY `user_name_UNIQUE` (`user_name`),
@@ -35,6 +35,7 @@ CREATE TABLE `file_folder` (
   `file_folder_name` varchar(45) NOT NULL DEFAULT '"新建文件夹"',
   `create_time` datetime NOT NULL,
   `file_repository_id` char(32) NOT NULL,
+  `file_folder_path` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`file_folder_id`)
 ) ENGINE=InnoDB ;
 
@@ -46,4 +47,12 @@ CREATE TABLE `file_repository` (
   PRIMARY KEY (`file_repository_id`),
   UNIQUE KEY `user_id_UNIQUE` (`user_id`)
 ) ENGINE=InnoDB ;
+
+CREATE TABLE `admin` (
+  `admin_id` int NOT NULL AUTO_INCREMENT,
+  `admin_name` varchar(45) NOT NULL,
+  `password` varchar(45) NOT NULL,
+  PRIMARY KEY (`admin_id`),
+  UNIQUE KEY `admin_name_UNIQUE` (`admin_name`)
+) ENGINE=InnoDB
 

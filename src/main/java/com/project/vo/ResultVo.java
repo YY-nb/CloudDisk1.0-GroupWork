@@ -10,7 +10,7 @@ public class ResultVo {
 
     private String message;
     private String error;
-    private Map<String,String> data=new HashMap<>();
+    private Map<String,Object> data=new HashMap<>();
 
     public String getMessage() {
         return message;
@@ -28,11 +28,11 @@ public class ResultVo {
         this.error = error;
     }
 
-    public Map<String, String> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
-    public void setData(Map<String, String> data) {
+    public void setData(Map<String, Object> data) {
         this.data = data;
     }
 }

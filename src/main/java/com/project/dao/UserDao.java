@@ -26,6 +26,12 @@ public interface UserDao {
     User selectByUserName(String userName);
 
     /**
+     * 根据文件仓库id查用户
+     * @param fileRepositoryId
+     * @return
+     */
+    User selectByRepositoryId(String fileRepositoryId);
+    /**
      * 修改用户
      * @param user
      * @return  数据库影响行数

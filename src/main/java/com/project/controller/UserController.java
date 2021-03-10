@@ -32,10 +32,8 @@ public class UserController extends BaseController{
     @RequestMapping(value = {"/user/login"},produces = {"application/json;charset=utf-8"},method=RequestMethod.POST)
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
-    public ResultVo login(User user) throws LoginException {
+    public ResultVo login(String email,String password) throws LoginException {
         ResultMessageUtil.removeData(result);
-        String email=user.getEmail();
-        String password=user.getPassword();
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         User userByEmail=userService.selectByEmail(email);
         if(userByEmail==null){
@@ -43,8 +41,7 @@ public class UserController extends BaseController{
         } else {
             if(!userByEmail.getPassword().equals(password)){
                 throw new LoginException("密码错误");
-            }
-            else{
+            } else{
                 //执行到此步说明登录验证成功
                 logger.info("登录状态：已登录");
                 //分配token给前端
@@ -55,8 +52,9 @@ public class UserController extends BaseController{
                 ResultMessageUtil.setDataByString("token",token,result);
                 session.setAttribute("loginUser",userByEmail);
                 return result;
+                }
             }
-        }
+
 
 
 
@@ -96,6 +94,7 @@ public class UserController extends BaseController{
             session.setAttribute("authCode",authCode);
             session.setMaxInactiveInterval(120);
             ResultMessageUtil.setSuccess(result);
+            logger.info("验证码已保存至session中");
             return result;
         }
         else{
@@ -108,11 +107,14 @@ public class UserController extends BaseController{
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
     public  ResultVo register(String userName, String email, String password, String authCode, MultipartFile avatar) throws RegisterException, IOException {
+        ResultMessageUtil.removeData(result);
         String code= (String) session.getAttribute("authCode");
+        logger.info(code);  //测试
         //检查验证码
         if(!authCode.equals(code)){
             String error="验证码错误或过期";
-            ResultMessageUtil.setSuccessByString(error,result);
+            ResultMessageUtil.setErrorByString(error,result);
+            logger.error(error);
             return  result;
         }
         User user=new User();
@@ -120,32 +122,32 @@ public class UserController extends BaseController{
         user.setUserName(userName.trim());
         user.setEmail(email);
         user.setPassword(password);
-        user.setRole("1");
         //生成UUID
         String id=UUIDUtil.getUUID();
         user.setId(id);
         user.setFileRepositoryId(id);
         user.setRegisterTime(LocalDateTime.now());
-
-        //文件最后要储存的路径
-        String filePath=formerPath+userName+"/avatar";
+        String avatarName=avatar.getOriginalFilename(); //头像名称
         //上传文件到指定目录
-        FileUtil.uploadFile(avatar,filePath,avatar.getOriginalFilename());
+        FileUtil.uploadFile(avatar,avatarPath,avatarName);
         //没抛出异常说明上传成功
         logger.info("头像上传至本地成功");
-        user.setAvatar(filePath);
+        user.setAvatar(avatarPath+avatarName);
         //初始化用户专属 的文件仓库
         FileRepository repository=new FileRepository();
         repository.setFileRepositoryId(id);
         repository.setUserId(id);
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
 
-
-       if(userService.register(user)){
+        if(userService.register(user)){
             //用户注册成功后为用户创建文件仓库
             FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
             if(fileRepositoryService.insertRepository(repository)){
                 ResultMessageUtil.setSuccess(result);
+                ResultMessageUtil.setDataByString("email",email,result);
+                ResultMessageUtil.setDataByString("userName",userName,result);
+                ResultMessageUtil.setDataByString("avatar",avatarName,result);
+                ResultMessageUtil.setDataByString("role","admin",result);
                 logger.info("用户注册成功！");
                 logger.info("用户专属文件仓库创建成功！");
                 return result;

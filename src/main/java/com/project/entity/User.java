@@ -11,7 +11,7 @@ public class User {
     private String password;
     private LocalDateTime registerTime;
     private String avatar;
-    private String role;  //0代表管理员，1代表普通用户
+
 
     public User() {
     }
@@ -74,13 +74,6 @@ public class User {
         this.avatar = avatar;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     @Override
     public String toString() {
@@ -92,7 +85,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", registerTime=" + registerTime +
                 ", avatar='" + avatar + '\'' +
-                ", role='" + role + '\'' +
                 '}';
     }
 }

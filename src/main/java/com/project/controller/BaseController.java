@@ -1,12 +1,7 @@
 package com.project.controller;
 
 import com.project.entity.User;
-import com.project.service.FileRepositoryService;
-import com.project.service.UserService;
-import com.project.service.impl.FileRepositoryServiceImpl;
-import com.project.service.impl.UserServiceImpl;
-import com.project.util.LogUtil;
-import com.project.util.ServiceFactory;
+
 import com.project.vo.ResultVo;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -26,6 +21,7 @@ public class BaseController {
     protected HttpServletRequest request;
     protected User loginUser;
     protected String formerPath="/home/cloudDisk/www/user/";
+    protected String avatarPath="http://120.25.105.43:10219/avatars/";
 //所有controller方法执行前先初始化
 @ModelAttribute
     public void setResAndReq(HttpServletRequest request,HttpServletResponse response){

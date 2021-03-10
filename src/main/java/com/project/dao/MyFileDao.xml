@@ -132,4 +132,17 @@
         delete from my_file
         where file_id=#{fileId}
     </delete>
+
+    <update id="updateFileName" >
+        update from my_file
+        set file_name =#{fileName}
+        where file_id=#{fileId}
+    </update>
+
+    <select id="getFileByPath" resultMap="MyFileMap">
+        select
+        <include refid="allColumn"/>
+        from my_file
+        where file_path=#{filePath}
+    </select>
 </mapper>

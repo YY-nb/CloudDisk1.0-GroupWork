@@ -13,10 +13,10 @@
         <result column="password" property="password"/>
         <result column="register_time" property="registerTime"/>
         <result column="avatar" property="avatar"/>
-        <result column="role" property="role"/>
+
     </resultMap>
     <!--全部字段-->
-    <sql id="allColumn"> user_id, file_repository_id, user_name,email,password,register_time, avatar,role</sql>
+    <sql id="allColumn"> user_id, file_repository_id, user_name,email,password,register_time, avatar</sql>
 
     <!--添加语句的字段列表-->
     <sql id="insertColumn">
@@ -41,9 +41,7 @@
         <if test="avatar != null ">
             avatar,
         </if>
-        <if test="role != null ">
-            role
-        </if>
+
     </sql>
     <!--添加语句的值列表-->
     <sql id="insertValue">
@@ -68,9 +66,7 @@
         <if test="avatar != null ">
             #{avatar},
         </if>
-        <if test="role != null ">
-            #{role}
-        </if>
+
     </sql>
     <!-- 修改用户信息    -->
     <sql id="updateValue">
@@ -95,9 +91,7 @@
         <if test="avatar != null ">
             avatar=#{avatar},
         </if>
-        <if test="role != null ">
-            role=#{role}
-        </if>
+
     </sql>
     <!--添加用户-->
     <insert id="insertUser">
@@ -145,4 +139,13 @@
             user_id=#{userId}
         </where>
     </delete>
+
+    <select id="selectByRepositoryId" resultMap="userMap">
+        select
+        <include refid="allColumn"/>
+        from user
+        <where>
+            file_repository_id=#{fileRepositoryId}
+        </where>
+    </select>
 </mapper>

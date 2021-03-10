@@ -23,4 +23,15 @@ public class FileRepositoryServiceImpl  implements FileRepositoryService {
         FileRepositoryDao fileRepositoryDao= SqlSessionUtil.getSqlSession().getMapper(FileRepositoryDao.class);
         return fileRepositoryDao.getRepositoryByUserId(userId);
     }
+
+    @Override
+    public boolean updateSize(FileRepository fileRepository) {
+        FileRepositoryDao fileRepositoryDao= SqlSessionUtil.getSqlSession().getMapper(FileRepositoryDao.class);
+        if(fileRepositoryDao.updateSize(fileRepository)==1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

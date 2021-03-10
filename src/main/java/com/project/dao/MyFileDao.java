@@ -20,16 +20,25 @@ public interface MyFileDao {
     List<MyFile> getFileByParentFolderId(String parentFolderId);
 
     /**
-     * 根据路径获得所有匹配的文件
+     * 根据路径获得匹配的文件
      * @param filePath
      * @return 文件列表
      */
-    List<MyFile> getFileByPath(String filePath);
+    MyFile getFileByPath(String filePath);
 
     /**
      * 删除文件
-     * @param file
+     * @param paths
      * @return 数据库影响的行数
      */
-    Integer deleteFile(MyFile file);
+    Integer deleteFile(List<String> paths);
+
+    /**
+     * 重命名文件
+     * @param myFile
+     * @return 数据影响的行数
+     */
+    Integer updateFileName(MyFile myFile);
+
+
 }

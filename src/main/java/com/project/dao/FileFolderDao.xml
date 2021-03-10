@@ -10,10 +10,11 @@
         <result property="parentFolderId" column="parent_folder_id"/>
         <result property="fileFolderName" column="file_folder_name"/>
         <result property="createTime" column="create_time"/>
+        <result property="fileFolderPath" column="file_folder_path"/>
     </resultMap>
 <!--    所有字段-->
     <sql id="allColumn">
-        file_folder_id,file_repository_id,parent_folder_id,file_folder_name,create_time
+        file_folder_id,file_repository_id,parent_folder_id,file_folder_name,create_time,file_folder_path
     </sql>
 <!--    添加语句的字段列表-->
     <sql id="insertColumn">
@@ -30,7 +31,10 @@
         file_folder_name,
     </if>
     <if test="createTime !=null">
-        create_time
+        create_time,
+    </if>
+    <if test="fileFolderPath !=null">
+        file_folder_path
     </if>
     </sql>
 <!--    添加语句的所有值-->
@@ -48,7 +52,10 @@
             #{fileFolderName},
         </if>
         <if test="createTime !=null">
-            #{createTime}
+            #{createTime},
+        </if>
+        <if test="fileFolderPath !=null">
+            #{fileFolderPath}
         </if>
     </sql>
 <!--    修改信息-->
@@ -66,7 +73,10 @@
             file_folder_name=#{fileFolderName},
         </if>
         <if test="createTime !=null">
-            create_time=#{createTime}
+            create_time=#{createTime},
+        </if>
+        <if test="fileFolderPath !=null">
+            file_folder_path=#{fileFolderPath}
         </if>
     </sql>
     <!--    添加文件夹-->
@@ -94,4 +104,17 @@
         from file_folder
         where parent_folder_id=#{parentFolderId}
     </select>
+
+    <update id="updateFolderName">
+        update file_folder
+        set file_folder_name=#{fileFolderName}
+    </update>
+
+    <select id="getFolderByPath" resultMap="fileFolderMap">
+        select
+        <include refid="allColumn"/>
+        from file_folder
+        where file_folder_path=#{fileFolerPath}
+    </select>
+
 </mapper>

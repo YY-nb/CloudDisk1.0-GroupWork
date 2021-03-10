@@ -8,6 +8,7 @@ public class FileFolder {
     private String parentFolderId;
     private String fileFolderName;
     private LocalDateTime createTime;  //文件夹创建时间
+    private String fileFolderPath;
 
     public FileFolder() {
     }
@@ -52,6 +53,14 @@ public class FileFolder {
         this.createTime = createTime;
     }
 
+    public String getFileFolderPath() {
+        return fileFolderPath;
+    }
+
+    public void setFileFolderPath(String fileFolderPath) {
+        this.fileFolderPath = fileFolderPath;
+    }
+
     @Override
     public String toString() {
         return "FileFolder{" +
@@ -60,6 +69,7 @@ public class FileFolder {
                 ", parentFolderId='" + parentFolderId + '\'' +
                 ", fileFolderName='" + fileFolderName + '\'' +
                 ", createTime=" + createTime +
+                ", fileFolderPath='" + fileFolderPath + '\'' +
                 '}';
     }
 }

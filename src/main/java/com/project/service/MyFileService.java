@@ -18,4 +18,18 @@ public interface MyFileService {
      * @return 文件列表
      */
     List<MyFile> getFileByParentFolderId(String parentFolderId);
+
+    /**
+     * 修改文件名字
+     * @param myFile
+     * @return  是否成功
+     */
+    boolean updateFileName(MyFile myFile);
+
+    /**
+     * 根据路径找文件
+     * @param filePath
+     * @return MyFile
+     */
+    MyFile getFileByPath(String filePath);
 }
