@@ -1,15 +1,18 @@
 package com.project.util;
 
 import com.project.entity.FileFolder;
+import com.project.entity.FileRepository;
 import com.project.entity.MyFile;
 import com.project.exception.FileException;
 import com.project.service.FileFolderService;
+import com.project.service.FileRepositoryService;
 import com.project.service.MyFileService;
 import org.slf4j.Logger;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileUtil {
@@ -66,5 +69,39 @@ public class FileUtil {
                 throw new FileException(error);
             }
         }
+    }
+    public static void deleteFile(List<String> pathList, MyFileService myFileService, FileRepositoryService fileRepositoryService,FileRepository fileRepository) throws FileException {
+        //执行到这里说明数据库中的相关数据删除成功，接下来删除服务器上对应位置的文件
+        for(String path:pathList){
+            MyFile file=myFileService.getFileByPath(path);
+            if(!myFileService.deleteFile(file)){
+                throw new FileException("文件删除发生异常，服务器内部错误");
+            }
+            //修改文件仓库容量
+            fileRepository.setCurrentSize(fileRepository.getCurrentSize()-file.getSize());
+            fileRepositoryService.updateSize(fileRepository);
+            new File(path).delete();
+        }
+    }
+    public static void deleteFolder(FileFolder folder,FileFolderService fileFolderService,
+                MyFileService myFileService,FileRepositoryService fileRepositoryService,
+                                    FileRepository fileRepository) throws FileException {
+        //获取当前文件夹下的所有文件夹和文件
+        List<MyFile> files=myFileService.getFileByParentFolderId(folder.getFileFolderId());
+        List<FileFolder> folders=fileFolderService.getFolderByParentFolderId(folder.getFileFolderId());
+        if(files!=null){
+            List<String> pathList=new ArrayList<>();
+            for(MyFile file:files){
+                pathList.add(file.getFilePath());
+            }
+            deleteFile(pathList,myFileService,fileRepositoryService,fileRepository);
+        }
+        if (folders!=null){
+            for(FileFolder fileFolder:folders){
+                deleteFolder(fileFolder,fileFolderService,myFileService,fileRepositoryService,fileRepository);
+            }
+        }
+
+
     }
 }

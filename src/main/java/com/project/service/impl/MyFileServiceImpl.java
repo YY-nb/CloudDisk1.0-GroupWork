@@ -44,4 +44,25 @@ public class MyFileServiceImpl implements MyFileService {
         MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
         return myFileDao.getFileByPath(filePath);
     }
+
+    @Override
+    public boolean deleteFile(MyFile myFile) {
+        MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
+        if(myFileDao.deleteFile(myFile)==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public boolean deleteFileByPath(List<String> filePath) {
+        MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
+        if(myFileDao.deleteFileByPath(filePath)==1){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 }

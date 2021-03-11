@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 用于保存后端传给前端的一些信息   {"error":xxx , "message":xxx}
+ * 用于保存后端传给前端的一些信息   {"error":xxx , "message":xxx , "data": xxx}
  */
 public class ResultVo {
 

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import sun.reflect.misc.FieldUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -175,11 +176,33 @@ public class FileRepositoryController extends BaseController{
 
 
     }
-    @RequestMapping(value = {"/user/delete"},method = RequestMethod.POST)
+    @RequestMapping(value = {"/delete"},method = RequestMethod.POST)
     @ResponseBody
-    public ResultVo delete(List<Map<String,String>> files){
+    public ResultVo delete(List<Map<String,String>> files) throws FileException {
         ResultMessageUtil.removeData(result);
         String loginUserName=loginUser.getUserName();
+        List<String> fileList=new ArrayList<>();
+        List<String> fileFolderList=new ArrayList<>();
+        //吧把获取到的文件和文件夹路径分到两个列表去处理
+        for(Map<String,String> file:files){
+            if(file.get("type").equals("file")){
+                fileList.add(formerPath+loginUserName+file.get("path"));
+            }
+            if(file.get("type").equals("dir")){
+                fileFolderList.add(formerPath+loginUserName+file.get("path"));
+            }
+        }
+        FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileFolderServiceImpl());
+        FileRepository fileRepository=fileRepositoryService.getRepositoryByUserId(loginUser.getUserId());
+        MyFileService myFileService= (MyFileService) ServiceFactory.getService(new FileFolderServiceImpl());
+        //删除所有的文件
+        FileUtil.deleteFile(fileList,myFileService,fileRepositoryService,fileRepository);
+        FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
+        //删除所有的文件夹，包括文件夹里的
+        for(String path:fileFolderList){
+            FileFolder fileFolder=fileFolderService.getFolderByPath(path);
+            FileUtil.deleteFolder(fileFolder,fileFolderService,myFileService,fileRepositoryService,fileRepository);
+        }
 
         return null;
     }

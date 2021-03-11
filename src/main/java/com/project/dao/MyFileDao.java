@@ -28,10 +28,10 @@ public interface MyFileDao {
 
     /**
      * 删除文件
-     * @param paths
+     * @param myFile
      * @return 数据库影响的行数
      */
-    Integer deleteFile(List<String> paths);
+    Integer deleteFile(MyFile myFile);
 
     /**
      * 重命名文件
@@ -39,6 +39,12 @@ public interface MyFileDao {
      * @return 数据影响的行数
      */
     Integer updateFileName(MyFile myFile);
+
+    /**
+     * 根据路径删文件
+     * @param filePath
+     */
+    Integer deleteFileByPath(List<String> filePath);
 
 
 }

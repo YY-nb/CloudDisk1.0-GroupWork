@@ -32,4 +32,16 @@ public interface MyFileService {
      * @return MyFile
      */
     MyFile getFileByPath(String filePath);
+
+    /**
+     * 删除文件
+     * @param myFile
+     */
+    boolean deleteFile(MyFile myFile);
+
+    /**
+     * 根据路径删文件
+     * @param filePath
+     */
+    boolean deleteFileByPath(List<String> filePath);
 }

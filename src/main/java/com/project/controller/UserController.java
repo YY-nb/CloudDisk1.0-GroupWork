@@ -3,6 +3,7 @@ package com.project.controller;
 
 import com.project.entity.FileRepository;
 import com.project.entity.User;
+import com.project.exception.AuthCodeException;
 import com.project.exception.LoginException;
 import com.project.exception.RegisterException;
 import com.project.exception.UpdateException;
@@ -106,17 +107,9 @@ public class UserController extends BaseController{
     @RequestMapping(value = {"/user/register"},produces = {"application/json;charset=utf-8"},method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
-    public  ResultVo register(String userName, String email, String password, String authCode, MultipartFile avatar) throws RegisterException, IOException {
+    public  ResultVo register(String userName, String email, String password, String authCode, MultipartFile avatar) throws RegisterException, IOException, AuthCodeException {
         ResultMessageUtil.removeData(result);
-        String code= (String) session.getAttribute("authCode");
-        logger.info(code);  //测试
-        //检查验证码
-        if(!authCode.equals(code)){
-            String error="验证码错误或过期";
-            ResultMessageUtil.setErrorByString(error,result);
-            logger.error(error);
-            return  result;
-        }
+        checkAuthCode(authCode);
         User user=new User();
         //用户名去空格
         user.setUserName(userName.trim());
@@ -170,42 +163,37 @@ public class UserController extends BaseController{
     @RequestMapping(value = {"/user/update"},method = RequestMethod.GET)
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.GET)
-    public ResultVo update(User user) throws UpdateException {
+    public ResultVo update(String oldEmail,String newEmail,String authCode) throws UpdateException, AuthCodeException {
         ResultMessageUtil.removeData(result);
+        checkAuthCode(authCode);
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
-        String userName=user.getUserName();
-        String email=user.getEmail();
-        StringBuffer error=new StringBuffer();
-        boolean flag=true;
-        //先检查昵称邮箱是否重复
-        if(userName!=null){
-            if(userService.checkUserName(userName)){
-                 error.append("用户名已存在 ");
-                 flag=false;
+        if(userService.checkUserEmail(newEmail)){
+            throw new UpdateException("邮箱已重复，请重新输入邮箱");
+        }
+        User user=userService.selectByEmail(oldEmail);
+        user.setEmail(newEmail);
+        if (userService.updateUser(user)) {
+            logger.info("用户信息修改成功");
+            ResultMessageUtil.setSuccess(result);
+            String token=TokenUtil.sign(newEmail,DateTimeUtil.getDateTime());
+            ResultMessageUtil.setDataByString("email",newEmail,result);
+            ResultMessageUtil.setDataByString("userName",user.getUserName(),result);
+            ResultMessageUtil.setDataByString("token",token,result);
+            return result;
+        } else {
+            throw new UpdateException("更新失败，服务器内部错误");
+            }
 
-            }
-        }
-        if(email!=null){
-            if(userService.checkUserName(email)){
-                error.append("邮箱已存在 ");
-                flag=false;
-            }
-        }
-        if(!flag){
-            throw new UpdateException(error.toString());
-        }
-        else {
-            if (userService.updateUser(user)) {
-                logger.info("用户信息修改成功");
-                ResultMessageUtil.setSuccess(result);
-                String token=TokenUtil.sign(email,DateTimeUtil.getDateTime());
-                ResultMessageUtil.setDataByString("email",email,result);
-                ResultMessageUtil.setDataByString("userName",userName,result);
-                ResultMessageUtil.setDataByString("token",token,result);
-                return result;
-            } else {
-                throw new UpdateException("更新失败，服务器内部错误");
-            }
+    }
+
+    public void checkAuthCode(String authCode) throws  AuthCodeException {
+        String code= (String) session.getAttribute("authCode");
+        logger.info(code);
+        //检查验证码
+        if(!authCode.equals(code)){
+            String error="验证码错误或过期";
+            logger.error(error);
+            throw new AuthCodeException(error);
         }
     }
 

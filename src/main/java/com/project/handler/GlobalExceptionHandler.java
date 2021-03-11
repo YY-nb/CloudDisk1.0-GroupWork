@@ -1,9 +1,6 @@
 package com.project.handler;
 
-import com.project.exception.FileException;
-import com.project.exception.LoginException;
-import com.project.exception.RegisterException;
-import com.project.exception.UpdateException;
+import com.project.exception.*;
 import com.project.util.ResultMessageUtil;
 import com.project.util.LogUtil;
 import com.project.vo.ResultVo;
@@ -44,6 +41,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = FileException.class)
     @ResponseBody
     public  ResultVo doFileException(UpdateException e){
+        ResultMessageUtil.setErrorByException(e,result);
+        logger.error(e.getMessage());
+        return result;
+    }
+    @ExceptionHandler(value = AuthCodeException.class)
+    @ResponseBody
+    public  ResultVo doAuthCodeException(AuthCodeException e){
         ResultMessageUtil.setErrorByException(e,result);
         logger.error(e.getMessage());
         return result;

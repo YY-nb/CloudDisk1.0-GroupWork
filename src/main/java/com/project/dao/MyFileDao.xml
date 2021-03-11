@@ -145,4 +145,17 @@
         from my_file
         where file_path=#{filePath}
     </select>
+
+    <delete id="deleteFile">
+        delete * from my_file
+        where file_id=#{fileId}
+    </delete>
+
+    <delete id="deleteFileByPath">
+        delete * from my_file
+        where file_path in
+        <foreach collection="list" item="path" open="(" separator="," close=")">
+            #{filePath}
+        </foreach>
+    </delete>
 </mapper>
