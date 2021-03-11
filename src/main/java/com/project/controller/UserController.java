@@ -127,12 +127,15 @@ public class UserController extends BaseController{
         user.setId(id);
         user.setFileRepositoryId(id);
         user.setRegisterTime(LocalDateTime.now());
-        String avatarName=avatar.getOriginalFilename(); //头像名称
-        //上传文件到指定目录
-        FileUtil.uploadFile(avatar,avatarPath,avatarName);
-        //没抛出异常说明上传成功
-        logger.info("头像上传至本地成功");
-        user.setAvatar(avatarPath+avatarName);
+        String avatarName=null;
+        if(avatar!=null) {
+            avatarName = avatar.getOriginalFilename(); //头像名称
+            //上传文件到指定目录
+            FileUtil.uploadFile(avatar, avatarPath, avatarName);
+            //没抛出异常说明上传成功
+            logger.info("头像上传至本地成功");
+            user.setAvatar(avatarPath + avatarName);
+        }
         //初始化用户专属 的文件仓库
         FileRepository repository=new FileRepository();
         repository.setFileRepositoryId(id);

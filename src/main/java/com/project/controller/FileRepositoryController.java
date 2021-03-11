@@ -177,7 +177,9 @@ public class FileRepositoryController extends BaseController{
     }
     @RequestMapping(value = {"/user/delete"},method = RequestMethod.POST)
     @ResponseBody
-    public ResultVo delete(List<String> files){
+    public ResultVo delete(List<Map<String,String>> files){
+        ResultMessageUtil.removeData(result);
+        String loginUserName=loginUser.getUserName();
 
         return null;
     }
