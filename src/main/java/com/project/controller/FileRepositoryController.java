@@ -33,6 +33,11 @@ import java.util.Map;
 @CrossOrigin(origins = {"http://120.25.105.43"})
 public class  FileRepositoryController extends BaseController{
     private Logger logger= LogUtil.getInstance(FileRepositoryController.class);
+    private static List<MyFile> fileToCheck=new ArrayList<>(); //待审核列表
+
+    public static List<MyFile> getFileToCheck() {
+        return fileToCheck;
+    }
 
     @RequestMapping(value = {"/user/uploadFile"},method = RequestMethod.POST)
     @ResponseBody
@@ -91,9 +96,10 @@ public class  FileRepositoryController extends BaseController{
         file.setFilePath(filePath+"/"+name);
         file.setSize(fileSize);
         file.setType(myFile.getContentType());
-        file.setState("1");
+        file.setState("0"); //0表示待审核
         if(myFileService.insertFile(file)){
             logger.info("用户文件上传至数据库成功！");
+            fileToCheck.add(file);
             ResultMessageUtil.setSuccess(result);
 
             return result;
@@ -110,8 +116,6 @@ public class  FileRepositoryController extends BaseController{
         FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
         String loginUserName=loginUser.getUserName();
         String loginUserRepositoryId=loginUser.getFileRepositoryId();
-        String filePath=formerPath+loginUserName+path;
-
         //分离出父文件夹的名字,得到父文件夹id
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
         //获取当前目录下的所有文件夹
@@ -120,27 +124,10 @@ public class  FileRepositoryController extends BaseController{
             throw new FileException("当前目录下没有文件");
         }
         List<FileFolder> folders=fileFolderService.getFolderByParentFolderId(parentFolderId);
-
         List<Map<String,String>> responseList=new ArrayList<>(); //给前端的响应列表，包含文件或文件夹的相关信息
-        for(MyFile file:files){
-            Map<String,String> dataMap=new HashMap<>();
-            dataMap.put("date",DateTimeUtil.timeToString(file.getUploadTime()));
-            dataMap.put("creator",loginUserName);
-            dataMap.put("name",file.getFileName());
-            dataMap.put("path",file.getFilePath());
-            dataMap.put("size",String.valueOf(file.getSize()));
-            dataMap.put("type","file");
-            responseList.add(dataMap);
-        }
-        for(FileFolder folder:folders){
-            Map<String,String> dataMap=new HashMap<>();
-            dataMap.put("date",DateTimeUtil.timeToString(folder.getCreateTime()));
-            dataMap.put("creator",loginUserName);
-            dataMap.put("name",folder.getFileFolderName());
-            dataMap.put("path",folder.getFileFolderPath());
-            dataMap.put("type","dir");
-            responseList.add(dataMap);
-        }
+        //给前端的返回列表添加数据
+        FileUtil.addResponseListForFile(files,responseList,loginUserName);
+        FileUtil.addResponseListForFolder(folders,responseList,loginUserName);
         ResultMessageUtil.setSuccess(result);
         ResultMessageUtil.setDataByString("items",responseList,result);
         return result;
@@ -275,12 +262,7 @@ public class  FileRepositoryController extends BaseController{
 
         }
     }
-    @RequestMapping(value = {"/admin/checkFile"},method = RequestMethod.GET)
-    @ResponseBody
-    public ResultVo checkFile(String path){
 
-        return null;
-    }
 
 
 

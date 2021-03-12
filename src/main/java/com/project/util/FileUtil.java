@@ -13,7 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileUtil {
     /**
@@ -101,7 +103,30 @@ public class FileUtil {
                 deleteFolder(fileFolder,fileFolderService,myFileService,fileRepositoryService,fileRepository);
             }
         }
+    }
+    //给传给前端的文件列表添加数据
+    public static void addResponseListForFile(List<MyFile> files,List<Map<String,String>> responseList,String userName){
+        for(MyFile file:files){
+            Map<String,String> dataMap=new HashMap<>();
+            dataMap.put("date",DateTimeUtil.timeToString(file.getUploadTime()));
+            dataMap.put("creator",userName);
+            dataMap.put("name",file.getFileName());
+            dataMap.put("path",file.getFilePath());
+            dataMap.put("size",String.valueOf(file.getSize()));
+            dataMap.put("type","file");
+            responseList.add(dataMap);
+        }
 
-
+    }
+    public static void addResponseListForFolder(List<FileFolder>folders,List<Map<String,String>>responseList,String userName){
+        for(FileFolder folder:folders){
+            Map<String,String> dataMap=new HashMap<>();
+            dataMap.put("date",DateTimeUtil.timeToString(folder.getCreateTime()));
+            dataMap.put("creator",userName);
+            dataMap.put("name",folder.getFileFolderName());
+            dataMap.put("path",folder.getFileFolderPath());
+            dataMap.put("type","dir");
+            responseList.add(dataMap);
+        }
     }
 }

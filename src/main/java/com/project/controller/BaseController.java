@@ -1,5 +1,6 @@
 package com.project.controller;
 
+import com.project.entity.Admin;
 import com.project.entity.User;
 
 import com.project.vo.ResultVo;
@@ -20,6 +21,7 @@ public class BaseController {
     protected HttpServletResponse response;
     protected HttpServletRequest request;
     protected User loginUser;
+    protected Admin loginAdmin;
     protected String formerPath="/home/cloudDisk/www/user/";
     protected String avatarPath="http://120.25.105.43:10219/avatars/";
 //所有controller方法执行前先初始化
@@ -29,6 +31,6 @@ public class BaseController {
         this.response=response;
         this.session=request.getSession();
         this.loginUser= (User) session.getAttribute("loginUser");  //得到当前的登录对象
-
+        this.loginAdmin= (Admin) session.getAttribute("loginAdmin");  //得到当前的管理员登录对象
     }
 }
