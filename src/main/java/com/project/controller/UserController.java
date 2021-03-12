@@ -64,6 +64,7 @@ public class UserController extends BaseController{
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.GET)
     public ResultVo checkName(String userName) throws RegisterException {
+        ResultMessageUtil.removeData(result);
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         //没找到重复名字
         if(!userService.checkUserName(userName)) {
@@ -84,6 +85,7 @@ public class UserController extends BaseController{
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo validCode(String email) throws RegisterException {
+        ResultMessageUtil.removeData(result);
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         if(!userService.checkUserEmail(email)){
             //执行到这里说明邮箱未重复

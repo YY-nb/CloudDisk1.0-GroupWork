@@ -2,8 +2,6 @@ package com.project.service.impl;
 
 import com.project.dao.UserDao;
 import com.project.entity.User;
-import com.project.exception.LoginException;
-import com.project.exception.RegisterException;
 import com.project.service.UserService;
 import com.project.util.SqlSessionUtil;
 

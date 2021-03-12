@@ -4,11 +4,13 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 public class SqlSessionUtil {
+    private static Logger logger=LogUtil.getInstance(SqlSessionUtil.class);
     private SqlSessionUtil(){}
 
     private static SqlSessionFactory factory;
@@ -19,10 +21,12 @@ public class SqlSessionUtil {
         InputStream inputStream = null;
         try {
             inputStream = Resources.getResourceAsStream(resource);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("发生异常",e);
         }
         factory = new SqlSessionFactoryBuilder().build(inputStream);
+
 
     }
 
@@ -51,4 +55,5 @@ public class SqlSessionUtil {
 
     }
 }
+
 

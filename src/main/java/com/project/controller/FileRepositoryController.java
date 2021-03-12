@@ -31,7 +31,7 @@ import java.util.Map;
 
 @Controller
 @CrossOrigin(origins = {"http://120.25.105.43"})
-public class FileRepositoryController extends BaseController{
+public class  FileRepositoryController extends BaseController{
     private Logger logger= LogUtil.getInstance(FileRepositoryController.class);
 
     @RequestMapping(value = {"/user/uploadFile"},method = RequestMethod.POST)
@@ -275,6 +275,13 @@ public class FileRepositoryController extends BaseController{
 
         }
     }
+    @RequestMapping(value = {"/admin/checkFile"},method = RequestMethod.GET)
+    @ResponseBody
+    public ResultVo checkFile(String path){
+
+        return null;
+    }
+
 
 
 }
