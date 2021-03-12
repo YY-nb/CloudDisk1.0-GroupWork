@@ -21,7 +21,7 @@ public class TokenHandler implements HandlerInterceptor {
         ResultVo result=new ResultVo();
         //登录或注册时的请求直接放行
         if(("/user/login".equals(path))||("/user/register".equals(path))||
-                ("/user/getCode".equals(path))||("/user/checkName".equals(path))||"/test".equals(path)
+                ("/user/getCode".equals(path))||("/user/checkName".equals(path))
                 ||"/admin/login".equals(path)){
             return true;
         }
