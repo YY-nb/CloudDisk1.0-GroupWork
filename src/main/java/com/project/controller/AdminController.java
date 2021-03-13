@@ -61,7 +61,6 @@ public class AdminController extends BaseController{
         ResultMessageUtil.removeData(result);
         List<MyFile> fileToCheck= FileRepositoryController.getFileToCheck();
         List<Map<String,String>> responseList=new ArrayList<>();
-        MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
         UserService userService= (UserService) ServiceFactory.getService(new UserServiceImpl());
         for(MyFile file:fileToCheck){
             User user=userService.selectByRepositoryId(file.getFileRepositoryId());  //根据文件的仓库id找出对应用户，最后需要得到文件的主人名
@@ -85,8 +84,11 @@ public class AdminController extends BaseController{
         for(String filePath:files){
             MyFile file=myFileService.getFileByPath(filePath);
             file.setState("1"); //1代表审核通过
-
+            myFileService.updateFile(file);  //修改数据库中信息
+            FileRepositoryController.removeFileInCheck(file); //从待审核表中删除对应文件
         }
+        logger.info("已删除待审核表中通过审核的文件");
+        ResultMessageUtil.setSuccess(result);
         return null;
     }
 }

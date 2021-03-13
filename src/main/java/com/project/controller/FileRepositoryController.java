@@ -36,7 +36,7 @@ public class  FileRepositoryController extends BaseController{
         return fileToCheck;
     }
     public static void removeFileInCheck(MyFile file){
-        for(int i=fileToCheck.size();i>=0;i--){
+        for(int i=fileToCheck.size()-1;i>=0;i--){
             if(fileToCheck.get(i).getFileId().equals(file.getFileId())){
                 fileToCheck.remove(i);
             }
