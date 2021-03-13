@@ -125,7 +125,7 @@ public class  FileRepositoryController extends BaseController{
         //获取当前目录下的所有文件夹
         List<MyFile> files=myFileService.getFileByParentFolderId(parentFolderId);
         if(files==null){
-            throw new FileException("当前目录下没有文件");
+            throw new FileException("服务器内部错误");
         }
         List<FileFolder> folders=fileFolderService.getFolderByParentFolderId(parentFolderId);
         List<Map<String,String>> responseList=new ArrayList<>(); //给前端的响应列表，包含文件或文件夹的相关信息

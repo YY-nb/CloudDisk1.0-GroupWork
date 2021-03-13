@@ -17,7 +17,9 @@
     <mvc:cors>
         <mvc:mapping path="/**"
                      allowed-origins="http://120.25.105.43"
+                     allowed-methods="*"
                      max-age="1800"
+                     allowed-headers="Origin,X-Requested-With,Content-Type,Accept,Authorization,token"
                      allow-credentials="true"/>
     </mvc:cors>
     <mvc:annotation-driven>

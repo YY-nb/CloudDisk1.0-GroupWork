@@ -27,22 +27,6 @@ public class PrintJson {
         }
 
     }
-    public static void printError(HttpServletResponse response, Exception e, ResultVo result){
-        String errorMessage=e.getMessage();
 
-        result.setMessage("failed");
-        result.setError(errorMessage);
-        parseToJson(response,result);
-    }
-    public static void printJsonFlag(HttpServletResponse response,boolean flag){
-        Map<String,Boolean> message=new HashMap<>();
-        message.put("success",flag);
-        String json=JSON.toJSONString(message);
-        try {
-            response.getWriter().print(json);
-        } catch (IOException e) {
-            logger.error("发生异常",e);
-        }
-    }
 
 }

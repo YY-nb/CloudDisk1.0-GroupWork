@@ -25,13 +25,20 @@ public class TokenHandler implements HandlerInterceptor {
                 ||"/admin/login".equals(path)){
             return true;
         }
+        if ("OPTIONS".equals(request.getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        }
         String token=request.getHeader("Authorization");
+        logger.info("token is {}",token);
         if(token!=null){
             boolean flag = TokenUtil.verify(token);
             //如果token验证成功
             if (flag) {
+                logger.info("token验证成功");
                 return true;
             }
+            logger.info("有token但值错误");
         }
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json;charset=utf-8");
