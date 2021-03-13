@@ -19,13 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +35,13 @@ public class  FileRepositoryController extends BaseController{
     public static List<MyFile> getFileToCheck() {
         return fileToCheck;
     }
-
+    public static void removeFileInCheck(MyFile file){
+        for(int i=fileToCheck.size();i>=0;i--){
+            if(fileToCheck.get(i).getFileId().equals(file.getFileId())){
+                fileToCheck.remove(i);
+            }
+        }
+    }
     @RequestMapping(value = {"/user/uploadFile"},method = RequestMethod.POST)
     @ResponseBody
     @CrossOrigin(methods = RequestMethod.POST)
@@ -110,6 +113,7 @@ public class  FileRepositoryController extends BaseController{
     }
     @RequestMapping(value = {"/user/getFileList"},method = RequestMethod.GET)
     @ResponseBody
+    @CrossOrigin(methods = RequestMethod.GET)
     public ResultVo getFileList(String path) throws FileException {
         ResultMessageUtil.removeData(result);
         MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
@@ -126,15 +130,21 @@ public class  FileRepositoryController extends BaseController{
         List<FileFolder> folders=fileFolderService.getFolderByParentFolderId(parentFolderId);
         List<Map<String,String>> responseList=new ArrayList<>(); //给前端的响应列表，包含文件或文件夹的相关信息
         //给前端的返回列表添加数据
-        FileUtil.addResponseListForFile(files,responseList,loginUserName);
-        FileUtil.addResponseListForFolder(folders,responseList,loginUserName);
+        for(MyFile file:files){
+            FileUtil.addResponseListForFile(file,responseList,loginUserName);
+        }
+        for(FileFolder folder:folders){
+            FileUtil.addResponseListForFolder(folder,responseList,loginUserName);
+        }
+
         ResultMessageUtil.setSuccess(result);
-        ResultMessageUtil.setDataByString("items",responseList,result);
+        ResultMessageUtil.setDataByString("items",responseList,result); //{"data":{"item":{“date":xxx,"creator":xxx} } }
         return result;
     }
 
     @RequestMapping(value = {"/user/createFolder"},method = RequestMethod.POST)
     @ResponseBody
+    @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo createFolder(String path,String name) throws FileException {
         ResultMessageUtil.removeData(result);
         FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
@@ -165,6 +175,7 @@ public class  FileRepositoryController extends BaseController{
     }
     @RequestMapping(value = {"/delete"},method = RequestMethod.POST)
     @ResponseBody
+    @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo delete(List<Map<String,String>> files) throws FileException {
         ResultMessageUtil.removeData(result);
         String loginUserName=loginUser.getUserName();
@@ -195,6 +206,7 @@ public class  FileRepositoryController extends BaseController{
     }
     @RequestMapping(value = {"/user/updateName"},method = RequestMethod.POST)
     @ResponseBody
+    @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo updateName(String path,String newName,String type) throws FileException {
         ResultMessageUtil.removeData(result);
         String userName=loginUser.getUserName();
@@ -217,7 +229,7 @@ public class  FileRepositoryController extends BaseController{
                 //修改数据库数据
                 String oldName=myFile.getFileName();
                 myFile.setFileName(newName);
-                if(myFileService.updateFileName(myFile)){
+                if(myFileService.updateFile(myFile)){
                     logger.info(String.format("文件重命名成功，原名字为%s，新名字为%s",oldName,myFile.getFileName()));
                     ResultMessageUtil.setSuccess(result);
                     return result;

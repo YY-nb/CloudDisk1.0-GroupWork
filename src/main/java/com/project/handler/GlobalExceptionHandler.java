@@ -52,6 +52,13 @@ public class GlobalExceptionHandler {
         logger.error(e.getMessage());
         return result;
     }
+    @ExceptionHandler(value = AdminException.class)
+    @ResponseBody
+    public  ResultVo doAdminException(AdminException e){
+        ResultMessageUtil.setErrorByException(e,result);
+        logger.error(e.getMessage());
+        return result;
+    }
 
 
 }

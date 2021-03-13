@@ -28,9 +28,9 @@ public class MyFileServiceImpl implements MyFileService {
     }
 
     @Override
-    public boolean updateFileName(MyFile myFile) {
+    public boolean updateFile(MyFile myFile) {
         MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
-        if(myFileDao.updateFileName(myFile)==1){
+        if(myFileDao.updateFile(myFile)==1){
             return true;
         }
         else{

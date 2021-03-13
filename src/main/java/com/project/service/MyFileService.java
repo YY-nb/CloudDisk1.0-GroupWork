@@ -20,11 +20,11 @@ public interface MyFileService {
     List<MyFile> getFileByParentFolderId(String parentFolderId);
 
     /**
-     * 修改文件名字
+     * 修改文件
      * @param myFile
      * @return  是否成功
      */
-    boolean updateFileName(MyFile myFile);
+    boolean updateFile(MyFile myFile);
 
     /**
      * 根据路径找文件

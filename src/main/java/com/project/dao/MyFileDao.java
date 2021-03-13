@@ -34,11 +34,11 @@ public interface MyFileDao {
     Integer deleteFile(MyFile myFile);
 
     /**
-     * 重命名文件
+     * 修改文件信息
      * @param myFile
      * @return 数据影响的行数
      */
-    Integer updateFileName(MyFile myFile);
+    Integer updateFile(MyFile myFile);
 
     /**
      * 根据路径删文件

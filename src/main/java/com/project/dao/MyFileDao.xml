@@ -135,7 +135,9 @@
 
     <update id="updateFileName" >
         update from my_file
-        set file_name =#{fileName}
+        <set>
+            <include refid="updateValue"/>
+        </set>
         where file_id=#{fileId}
     </update>
 
