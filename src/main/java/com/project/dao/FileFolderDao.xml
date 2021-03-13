@@ -104,6 +104,12 @@
         from file_folder
         where parent_folder_id=#{parentFolderId}
     </select>
+    <select id="getRootFolderByRepositoryId" resultMap="fileFolderMap">
+        select
+        <include refid="allColumn"/>
+        from file_folder
+        where file_repository_id=#{fileRepositoryId} and parent_folder_id="0"
+    </select>
 
     <update id="updateFolderName">
         update file_folder

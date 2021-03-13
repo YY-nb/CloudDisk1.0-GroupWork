@@ -20,7 +20,7 @@ public interface FileFolderDao {
      * @param fileRepositoryId
      * @return FileFolder
      */
-    FileFolder selectFolderByNameAndRepository(@Param("filerFolderName") String fileFolderName, @Param("fileRepositoryId") String fileRepositoryId);
+    FileFolder selectFolderByNameAndRepository(@Param("fileFolderName") String fileFolderName, @Param("fileRepositoryId") String fileRepositoryId);
 
     /**
      * 根据父文件夹id查询文件夹
@@ -28,7 +28,11 @@ public interface FileFolderDao {
      * @return FileFolder
      */
     List<FileFolder> getFolderByParentFolderId(String parentFolderId);
-
+    /**
+     * 根据文件仓库id查根目录下的所有文件
+     * @param fileRepositoryId
+     */
+    List<FileFolder> getRootFolderByRepositoryId(String fileRepositoryId);
     /**
      * 修改文件夹名字
      * @param folder

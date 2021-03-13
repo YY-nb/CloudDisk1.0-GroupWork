@@ -27,5 +27,6 @@
     <update id="updateSize">
         update file_repository
         set current_size=#{currentSize}
+        where file_repository_id=#{fileRepositoryId}
     </update>
 </mapper>

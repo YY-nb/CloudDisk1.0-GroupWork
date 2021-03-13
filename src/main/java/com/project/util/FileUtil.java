@@ -52,8 +52,26 @@ public class FileUtil {
     public static  void reName(String newPath,String formerPath){
         new File(formerPath).renameTo(new File(newPath));
     }
-    public static void checkFileName(MyFileService myFileService, String fileName, String parentFolderId, Logger logger) throws FileException {
-        List<MyFile> myFiles=myFileService.getFileByParentFolderId(parentFolderId);
+    public static List<MyFile> getCurrentFileList(MyFileService myFileService,String parentFolderId,String fileRepositoryId){
+        List<MyFile> myFiles=null;
+        //根目录和其他目录分开处理
+        if(parentFolderId.equals("0")){
+            myFiles=myFileService.getRootFileByRepositoryId(fileRepositoryId);
+        }else{
+            myFiles=myFileService.getFileByParentFolderId(parentFolderId);
+        }
+        return myFiles;
+    }
+    public static List<FileFolder> getCurrentFolderList(FileFolderService fileFolderService,String parentFolderId,String fileRepositoryId){
+        List<FileFolder> folders = null;
+        if(parentFolderId.equals("0")){
+            folders=fileFolderService.getRootFolderByRepositoryId(fileRepositoryId);
+        }else{
+            folders=fileFolderService.getFolderByParentFolderId(parentFolderId);
+        }
+        return folders;
+    }
+    public static void checkFileName(List<MyFile> myFiles, String fileName, Logger logger) throws FileException {
         for(MyFile file:myFiles){
             if(file.getFileName().equals(fileName)){
                 String error="文件名已存在";
@@ -62,8 +80,8 @@ public class FileUtil {
             }
         }
     }
-    public static void checkFolderName(FileFolderService fileFolderService, String fileFolderName, String parentFolderId, Logger logger) throws FileException {
-        List<FileFolder> folders = fileFolderService.getFolderByParentFolderId(parentFolderId);
+    public static void checkFolderName(List<FileFolder> folders, String fileFolderName, Logger logger) throws FileException {
+
         for (FileFolder folder : folders) {
             if (folder.getFileFolderName().equals(fileFolderName)) {
                 String error = "新文件夹与其他文件夹名字重复";

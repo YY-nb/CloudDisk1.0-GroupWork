@@ -128,6 +128,13 @@
         where parent_folder_id=#{parentFolderId}
     </select>
 
+    <select id="getRootFileByRepositoryId" resultMap="MyFileMap">
+        select
+        <include refid="allColumn"/>
+        from my_file
+        where file_repository_id=#{fileRepositoryId} and parent_folder_id="0"
+    </select>
+
     <delete id="deleteFile" >
         delete from my_file
         where file_id=#{fileId}

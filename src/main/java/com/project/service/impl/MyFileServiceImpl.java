@@ -28,6 +28,12 @@ public class MyFileServiceImpl implements MyFileService {
     }
 
     @Override
+    public List<MyFile> getRootFileByRepositoryId(String fileRepositoryId) {
+        MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
+        return myFileDao.getRootFileByRepositoryId(fileRepositoryId);
+    }
+
+    @Override
     public boolean updateFile(MyFile myFile) {
         MyFileDao myFileDao=  SqlSessionUtil.getSqlSession().getMapper(MyFileDao.class);
         if(myFileDao.updateFile(myFile)==1){

@@ -23,13 +23,17 @@ public interface FileFolderService {
     /**
      * 根据父文件夹id查当前目录下所有文件夹
      * @param parentFolderId
-     * @return
      */
     List<FileFolder> getFolderByParentFolderId(String parentFolderId);
 
     /**
+     * 根据文件仓库id查根目录下的所有文件
+     * @param fileRepositoryId
+     */
+    List<FileFolder> getRootFolderByRepositoryId(String fileRepositoryId);
+    /**
      * 修改文件夹名字
-     * @param fileFolderName
+     * @param folder
      * @return 是否成功
      */
     boolean updateFolderName(FileFolder folder);

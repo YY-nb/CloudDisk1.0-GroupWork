@@ -20,6 +20,12 @@ public interface MyFileDao {
     List<MyFile> getFileByParentFolderId(String parentFolderId);
 
     /**
+     * 根据文件仓库id查询根目录所有文件
+     * @param fileRepositoryId
+     * @return 文件列表
+     */
+    List<MyFile> getRootFileByRepositoryId(String fileRepositoryId);
+    /**
      * 根据路径获得匹配的文件
      * @param filePath
      * @return 文件列表

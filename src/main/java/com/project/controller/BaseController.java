@@ -22,7 +22,7 @@ public class BaseController {
     protected HttpServletRequest request;
     protected User loginUser;
     protected Admin loginAdmin;
-    protected String formerPath="/home/cloudDisk/www/";
+    protected String formerPath="/home/cloudDisk/www";
     protected String avatarPath="http://120.25.105.43:10219/avatars/";
 //所有controller方法执行前先初始化
 @ModelAttribute

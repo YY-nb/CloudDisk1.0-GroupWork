@@ -34,6 +34,12 @@ public class FileFolderServiceImpl implements FileFolderService {
     }
 
     @Override
+    public List<FileFolder> getRootFolderByRepositoryId(String fileRepositoryId) {
+        FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
+        return fileFolderDao.getRootFolderByRepositoryId(fileRepositoryId);
+    }
+
+    @Override
     public boolean updateFolderName( FileFolder folder) {
         FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
         if(fileFolderDao.updateFolderName(folder)==1){

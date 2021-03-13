@@ -59,9 +59,11 @@ public class  FileRepositoryController extends BaseController{
         String name= myFile.getOriginalFilename();
         //分离出父文件夹的名字,得到父文件夹id
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
-        //判断上传的文件是否已存在与数据库中
+        //判断上传的文件是否已存在与数据库中，要先判断当前目录是根目录还是其他
         MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
-        FileUtil.checkFileName(myFileService,name,parentFolderId,logger);
+        //得到当前目录下的所有文件
+        List<MyFile> myFiles=FileUtil.getCurrentFileList(myFileService,parentFolderId,loginUserRepositoryId);
+        FileUtil.checkFileName(myFiles,name,logger);
         //判断是否超出文件仓库最大容量，先要知道是哪个用户的仓库
         FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileRepositoryServiceImpl());
         FileRepository repository= fileRepositoryService.getRepositoryByUserId(loginUserId);
@@ -122,11 +124,11 @@ public class  FileRepositoryController extends BaseController{
         //分离出父文件夹的名字,得到父文件夹id
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
         //获取当前目录下的所有文件夹
-        List<MyFile> files=myFileService.getFileByParentFolderId(parentFolderId);
+        List<MyFile> files=FileUtil.getCurrentFileList(myFileService,parentFolderId,loginUserRepositoryId);
         if(files==null){
             throw new FileException("服务器内部错误");
         }
-        List<FileFolder> folders=fileFolderService.getFolderByParentFolderId(parentFolderId);
+        List<FileFolder> folders=FileUtil.getCurrentFolderList(fileFolderService,parentFolderId,loginUserRepositoryId);
         List<Map<String,String>> responseList=new ArrayList<>(); //给前端的响应列表，包含文件或文件夹的相关信息
         //给前端的返回列表添加数据
         for(MyFile file:files){
@@ -152,7 +154,8 @@ public class  FileRepositoryController extends BaseController{
         //分离出父文件夹的名字,得到父文件夹id
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
         //判断上传的文件夹是否已存在与数据库中
-        FileUtil.checkFolderName(fileFolderService,name,parentFolderId,logger);
+        List<FileFolder> folders=FileUtil.getCurrentFolderList(fileFolderService,parentFolderId,loginUserRepositoryId);
+        FileUtil.checkFolderName(folders,name,logger);
         //执行到这里说明文件夹名未重复
         String folderPath=formerPath+path;
         //在本地创建对应文件夹
@@ -220,7 +223,8 @@ public class  FileRepositoryController extends BaseController{
             }
             else {
                 //检查新文件名有无重复
-                FileUtil.checkFileName(myFileService,newName,myFile.getParentFolderId(),logger);
+                List<MyFile> files=FileUtil.getCurrentFileList(myFileService,myFile.getParentFolderId(),myFile.getFileRepositoryId());
+                FileUtil.checkFileName(files,newName,logger);
                 //修改服务器上图片储存的地址
                 String newPath = formerPath +  path.substring(0, path.lastIndexOf("/") + 1) + newName;
                 FileUtil.reName(newPath,filePath);
@@ -246,14 +250,8 @@ public class  FileRepositoryController extends BaseController{
                 throw new FileException(error);
             } else {
                 //先检查新文件夹和当前目录下的其他文件夹名字是否重复
-                List<FileFolder> folders = fileFolderService.getFolderByParentFolderId(fileFolder.getParentFolderId());
-                for (FileFolder folder : folders) {
-                    if (folder.getFileFolderName().equals(newName)) {
-                        String error = "新文件夹与其他文件夹名字重复";
-                        logger.error(error);
-                        throw new FileException(error);
-                    }
-                }
+                List<FileFolder> folders =FileUtil.getCurrentFolderList(fileFolderService,fileFolder.getParentFolderId(),fileFolder.getFileRepositoryId());
+                FileUtil.checkFolderName(folders,newName,logger);
                 //修改文件夹在本地中的名字
                 String newPath = formerPath +  path.substring(0, path.lastIndexOf("/") + 1) + newName;
                 FileUtil.reName(newPath, filePath);
