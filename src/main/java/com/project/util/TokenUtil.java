@@ -13,7 +13,7 @@ public class TokenUtil {
     /**
      * token过期时间
      */
-    private static final long EXPIRE_TIME = 30 * 60 * 1000;
+    private static final long EXPIRE_TIME = 24 *60 * 60 * 1000;
     /**
      * token秘钥
      */

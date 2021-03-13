@@ -54,7 +54,6 @@ public class  FileRepositoryController extends BaseController{
         FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
         //当前用户的一些信息
         String loginUserId= loginUser.getUserId();
-        String loginUserName=loginUser.getUserName();
         String loginUserRepositoryId=loginUser.getFileRepositoryId();
         //获取源文件的名字
         String name= myFile.getOriginalFilename();
@@ -74,7 +73,7 @@ public class  FileRepositoryController extends BaseController{
             throw new FileException(error);
         }
         //文件最后要储存的目录
-        String filePath=formerPath+loginUserName+path;
+        String filePath=formerPath+path;
         //上传文件到指定目录
         FileUtil.uploadFile(myFile,filePath,name);
         //没抛出异常说明上传成功
@@ -138,7 +137,7 @@ public class  FileRepositoryController extends BaseController{
         }
 
         ResultMessageUtil.setSuccess(result);
-        ResultMessageUtil.setDataByString("items",responseList,result); //{"data":{"item":{“date":xxx,"creator":xxx} } }
+        ResultMessageUtil.setDataByString("items",responseList,result); //{"data":{"item":[“date":xxx,"creator":xxx] } }
         return result;
     }
 
@@ -147,15 +146,15 @@ public class  FileRepositoryController extends BaseController{
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo createFolder(String path,String name) throws FileException {
         ResultMessageUtil.removeData(result);
+        logger.info("path is {}",path);
         FileFolderService fileFolderService= (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
-        String loginUserName=loginUser.getUserName();
         String loginUserRepositoryId=loginUser.getFileRepositoryId();
         //分离出父文件夹的名字,得到父文件夹id
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
         //判断上传的文件夹是否已存在与数据库中
         FileUtil.checkFolderName(fileFolderService,name,parentFolderId,logger);
         //执行到这里说明文件夹名未重复
-        String folderPath=formerPath+loginUserName+path;
+        String folderPath=formerPath+path;
         //在本地创建对应文件夹
         new File(folderPath).mkdirs();
         FileFolder fileFolder=new FileFolder();
@@ -163,6 +162,7 @@ public class  FileRepositoryController extends BaseController{
         fileFolder.setFileFolderName(name);
         fileFolder.setFileRepositoryId(loginUserRepositoryId);
         fileFolder.setCreateTime(LocalDateTime.now());
+        fileFolder.setFileFolderPath(folderPath);
         if(fileFolderService.insertFileFolder(fileFolder)){
             ResultMessageUtil.setSuccess(result);
             logger.info("用户创建文件夹成功，数据已添加至数据库");
@@ -178,16 +178,15 @@ public class  FileRepositoryController extends BaseController{
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo delete(List<Map<String,String>> files) throws FileException {
         ResultMessageUtil.removeData(result);
-        String loginUserName=loginUser.getUserName();
         List<String> fileList=new ArrayList<>();
         List<String> fileFolderList=new ArrayList<>();
         //吧把获取到的文件和文件夹路径分到两个列表去处理
         for(Map<String,String> file:files){
             if(file.get("type").equals("file")){
-                fileList.add(formerPath+loginUserName+file.get("path"));
+                fileList.add(formerPath+file.get("path"));
             }
             if(file.get("type").equals("dir")){
-                fileFolderList.add(formerPath+loginUserName+file.get("path"));
+                fileFolderList.add(formerPath+file.get("path"));
             }
         }
         FileRepositoryService fileRepositoryService= (FileRepositoryService) ServiceFactory.getService(new FileFolderServiceImpl());
@@ -209,8 +208,7 @@ public class  FileRepositoryController extends BaseController{
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo updateName(String path,String newName,String type) throws FileException {
         ResultMessageUtil.removeData(result);
-        String userName=loginUser.getUserName();
-        String filePath=formerPath+userName+path;
+        String filePath=formerPath+path;
         //处理文件
         if(type.equals("file")){
             MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
@@ -224,7 +222,7 @@ public class  FileRepositoryController extends BaseController{
                 //检查新文件名有无重复
                 FileUtil.checkFileName(myFileService,newName,myFile.getParentFolderId(),logger);
                 //修改服务器上图片储存的地址
-                String newPath = formerPath + userName + path.substring(0, path.lastIndexOf("/") + 1) + newName;
+                String newPath = formerPath +  path.substring(0, path.lastIndexOf("/") + 1) + newName;
                 FileUtil.reName(newPath,filePath);
                 //修改数据库数据
                 String oldName=myFile.getFileName();
@@ -257,7 +255,7 @@ public class  FileRepositoryController extends BaseController{
                     }
                 }
                 //修改文件夹在本地中的名字
-                String newPath = formerPath + userName + path.substring(0, path.lastIndexOf("/") + 1) + newName;
+                String newPath = formerPath +  path.substring(0, path.lastIndexOf("/") + 1) + newName;
                 FileUtil.reName(newPath, filePath);
                 //修改数据库信息
                 String oldName=fileFolder.getFileFolderName();
