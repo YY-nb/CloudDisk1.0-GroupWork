@@ -87,7 +87,7 @@
             file_repository_id=#{fileRepositoryId},
         </if>
         <if test="parentFolderId!=null">
-            file_folder_id=#{parentFolderId},
+            parent_folder_id=#{parentFolderId},
         </if>
         <if test="fileName!=null">
             file_name=#{fileName},
@@ -140,8 +140,8 @@
         where file_id=#{fileId}
     </delete>
 
-    <update id="updateFileName" >
-        update from my_file
+    <update id="updateFile" >
+        update  my_file
         <set>
             <include refid="updateValue"/>
         </set>

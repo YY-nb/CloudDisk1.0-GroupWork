@@ -111,9 +111,12 @@
         where file_repository_id=#{fileRepositoryId} and parent_folder_id="0"
     </select>
 
-    <update id="updateFolderName">
+    <update id="updateFolder">
         update file_folder
-        set file_folder_name=#{fileFolderName}
+        <set>
+            <include refid="updateValue"/>
+        </set>
+        where file_folder_id=#{fileolderId}
     </update>
 
     <select id="getFolderByPath" resultMap="fileFolderMap">

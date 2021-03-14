@@ -38,7 +38,7 @@ public interface FileFolderDao {
      * @param folder
      * @return 数据库影响的行数
      */
-    Integer updateFolderName( FileFolder folder);
+    Integer updateFolder( FileFolder folder);
 
     /**
      * 根据路径获取文件夹
