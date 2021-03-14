@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,6 +124,7 @@ public class  FileRepositoryController extends BaseController{
         String loginUserRepositoryId=loginUser.getFileRepositoryId();
         //分离出父文件夹的名字,得到父文件夹id
         String parentFolderId=FileUtil.getParentFolderId(fileFolderService,path,loginUserRepositoryId);
+        logger.info("当前目录的父文件夹id是{}",parentFolderId);
         //获取当前目录下的所有文件夹
         List<MyFile> files=FileUtil.getCurrentFileList(myFileService,parentFolderId,loginUserRepositoryId);
         if(files==null){
@@ -157,9 +159,10 @@ public class  FileRepositoryController extends BaseController{
         List<FileFolder> folders=FileUtil.getCurrentFolderList(fileFolderService,parentFolderId,loginUserRepositoryId);
         FileUtil.checkFolderName(folders,name,logger);
         //执行到这里说明文件夹名未重复
-        String folderPath=formerPath+path;
+        String folderPath=formerPath+path+"/"+name;
         //在本地创建对应文件夹
         new File(folderPath).mkdirs();
+        logger.info("文件夹在本地创建成功");
         FileFolder fileFolder=new FileFolder();
         fileFolder.setFileFolderId(UUIDUtil.getUUID());
         fileFolder.setFileFolderName(name);
@@ -211,11 +214,11 @@ public class  FileRepositoryController extends BaseController{
     @CrossOrigin(methods = RequestMethod.POST)
     public ResultVo updateName(String path,String newName,String type) throws FileException {
         ResultMessageUtil.removeData(result);
-        String filePath=formerPath+path;
+
         //处理文件
         if(type.equals("file")){
             MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
-            MyFile myFile= myFileService.getFileByPath(filePath);
+            MyFile myFile= myFileService.getFileByPath(path);
             if(myFile==null){
                 String error="找不到该文件";
                 logger.error(error);
@@ -226,8 +229,8 @@ public class  FileRepositoryController extends BaseController{
                 List<MyFile> files=FileUtil.getCurrentFileList(myFileService,myFile.getParentFolderId(),myFile.getFileRepositoryId());
                 FileUtil.checkFileName(files,newName,logger);
                 //修改服务器上图片储存的地址
-                String newPath = formerPath +  path.substring(0, path.lastIndexOf("/") + 1) + newName;
-                FileUtil.reName(newPath,filePath);
+                String newPath = path.substring(0, path.lastIndexOf("/") + 1) + newName;
+                FileUtil.reName(newPath,path);
                 //修改数据库数据
                 String oldName=myFile.getFileName();
                 myFile.setFileName(newName);
@@ -243,7 +246,7 @@ public class  FileRepositoryController extends BaseController{
         //处理文件夹
         else  {
             FileFolderService fileFolderService = (FileFolderService) ServiceFactory.getService(new FileFolderServiceImpl());
-            FileFolder fileFolder = fileFolderService.getFolderByPath(filePath);
+            FileFolder fileFolder = fileFolderService.getFolderByPath(path);
             if (fileFolder == null) {
                 String error = "找不到该文件夹";
                 logger.error(error);
@@ -253,8 +256,8 @@ public class  FileRepositoryController extends BaseController{
                 List<FileFolder> folders =FileUtil.getCurrentFolderList(fileFolderService,fileFolder.getParentFolderId(),fileFolder.getFileRepositoryId());
                 FileUtil.checkFolderName(folders,newName,logger);
                 //修改文件夹在本地中的名字
-                String newPath = formerPath +  path.substring(0, path.lastIndexOf("/") + 1) + newName;
-                FileUtil.reName(newPath, filePath);
+                String newPath = path.substring(0, path.lastIndexOf("/") + 1) + newName;
+                FileUtil.reName(newPath, path);
                 //修改数据库信息
                 String oldName=fileFolder.getFileFolderName();
                 fileFolder.setFileFolderName(newName);
@@ -270,7 +273,30 @@ public class  FileRepositoryController extends BaseController{
 
         }
     }
+    @RequestMapping(value = {"/user/download"},method = RequestMethod.GET)
+    public void download(String path) throws FileException, UnsupportedEncodingException {
+        ResultMessageUtil.removeData(result);
+        MyFileService myFileService= (MyFileService) ServiceFactory.getService(new MyFileServiceImpl());
+        String filePath=formerPath+path;
+        MyFile file=myFileService.getFileByPath(filePath);
+        if(file==null){
+            throw new FileException("服务器内部错误");
+        }
+        // 已被授权访问
+        // 文件下载
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + new String(file.getFileName().getBytes("GBK"), "iso-8859-1") + "\"");
+        // 文件以二进制流传输
+        response.setHeader("Content-Type", "application/octet-stream;charset=utf-8");
+        // 返回真实文件路径交由 Nginx 处理，保证前端无法看到真实的文件路径。
+        // 这里的 "/file_server" 为 Nginx 中配置的下载服务名
+        response.setHeader("X-Accel-Redirect", "/file_server" + filePath);
+        response.setHeader("X-Accel-Charset", "utf-8");
+        // 禁止浏览器缓存
+        response.setHeader("Pragma", "No-cache");
+        response.setHeader("Cache-Control", "No-cache");
+        response.setHeader("Expires", "0");
 
+    }
 
 
 
