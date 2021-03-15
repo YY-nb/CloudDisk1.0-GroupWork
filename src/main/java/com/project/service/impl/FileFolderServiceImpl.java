@@ -40,9 +40,9 @@ public class FileFolderServiceImpl implements FileFolderService {
     }
 
     @Override
-    public boolean updateFolderName( FileFolder folder) {
+    public boolean updateFolder( FileFolder folder) {
         FileFolderDao fileFolderDao= SqlSessionUtil.getSqlSession().getMapper(FileFolderDao.class);
-        if(fileFolderDao.updateFolderName(folder)==1){
+        if(fileFolderDao.updateFolder(folder)==1){
             return  true;
         }else {
             return false;

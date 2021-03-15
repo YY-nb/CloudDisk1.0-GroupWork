@@ -36,7 +36,7 @@ public interface FileFolderService {
      * @param folder
      * @return 是否成功
      */
-    boolean updateFolderName(FileFolder folder);
+    boolean updateFolder(FileFolder folder);
 
     /**
      * 根据路径查文件夹
